@@ -85,8 +85,14 @@ class ViewController: UIViewController  {
         Button_action.addItem(title: "รายจ่าย", icon: UIImage(named: "icon2")){
             item in
 
-            self.present(self.AddExView(forType: "Home"), animated: true, completion: nil)
-
+            
+         
+    
+//            item.addTarget(self, action: #selector(AddNewEx) , for: .touchUpInside)
+//
+            
+            
+            self.present(self.AddExView(forType: "EX") , animated: true, completion: nil)
 
         }
      
@@ -94,21 +100,42 @@ class ViewController: UIViewController  {
        
     }
     
+    
+//
+//    @objc func AddNewEx(){
+//
+//        let story = UIStoryboard(name: "Main_In", bundle: nil)
+//        let controller = story.instantiateViewController(withIdentifier: "AddExViewController") as!
+//        AddExViewController
+//        self.present(controller, animated: true, completion: nil)
+//
+//    }
 
     private func AddINView(forType type: String) -> UIViewController {
         let vc = AddINViewController()
         navigationController?.pushViewController(vc, animated: true)
         return vc
   }
-
-
+    
     private func AddExView(forType type: String) -> UIViewController {
         let vcEX = AddExViewController()
         navigationController?.pushViewController(vcEX, animated: true)
         return vcEX
-
-    }
-
+  }
+//
+//    private func AddExView(){
+////        let vcEX = AddExViewController()
+////        navigationController?.pushViewController(vcEX, animated: true)
+////        return vcEX
+//
+//        let story = UIStoryboard(name: "Main_In", bundle: nil)
+//        let controller = story.instantiateViewController(withIdentifier: "AddExViewController") as!
+//        AddExViewController
+//        self.present(controller, animated: true, completion: nil)
+//
+//
+//    }
+//
 
   
     
