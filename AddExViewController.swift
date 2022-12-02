@@ -14,39 +14,26 @@ class AddExViewController: UIViewController  , UITextFieldDelegate  , UIPickerVi
 //   
 //    let realm = RealmService.shared.realm
 //    let add_Income_number   = realm.objects(add_Income_number.self )
-//    
+//
+    var Model_data_Array = [Model_data]()
 
-    let realm = try! Realm()
+//    let realm = try! Realm()
     var data_type_income: [String] = []
     var text_fixld_type_income: UITextField?
-    
-    
-    
     var Button_Save_Data: UIButton?
-    
-    
     var text_fixld_date: UITextField?{
         didSet { text_fixld_date?.AddDone_CancelToolbar()}
     }
-
     var text_fixld_number: UITextField?{
         didSet { text_fixld_number?.AddDone_CancelToolbar()}
     }
     var text_fixld_detail: UITextField?{
         didSet { text_fixld_detail?.AddDone_CancelToolbar()}
     }
-//
     var viewPicker =  UIPickerView()
     var datePicker = UIDatePicker()
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-    
-       
-       
-    
-
-        
             data_type_income = ["เงินเดือน", "โบนัส" , "เงินเก็บ" , "เงินได้จากขายเสื้อ", "เงินได้จากขายอาหารเสริม " ]
             view.backgroundColor = UIColor(red: 1.00, green: 0.26, blue: 0.26, alpha: 1.00)
             let label = UILabel(frame: CGRect(x: 0 ,
@@ -59,7 +46,6 @@ class AddExViewController: UIViewController  , UITextFieldDelegate  , UIPickerVi
             label.textColor = .white
             label.font = UIFont(name: "Halvetica", size: 17)
             self.view.addSubview(label)
-            
             text_fixld_number = UITextField.init(frame:(CGRect(x: 14,
                                                                y: 0.15 * self.view.frame.size.width,
                                                                width: self.view.frame.size.width - 40  ,
@@ -72,7 +58,6 @@ class AddExViewController: UIViewController  , UITextFieldDelegate  , UIPickerVi
             text_fixld_number?.keyboardType = .numberPad
             text_fixld_number?.delegate = self
             self.view.addSubview(text_fixld_number!)
-        
             text_fixld_type_income = UITextField.init(frame:(CGRect(x: 14,
                                                                     y: 0.30 * self.view.frame.size.width ,
                                                                     width: self.view.frame.size.width - 40 ,
@@ -86,7 +71,6 @@ class AddExViewController: UIViewController  , UITextFieldDelegate  , UIPickerVi
             viewPicker.dataSource = self
             viewPicker.delegate = self
             self.view.addSubview(text_fixld_type_income!)
-        
             text_fixld_detail = UITextField.init(frame:
                                                 (CGRect(x: 14,
                                                         y: 0.45 * self.view.frame.size.width,
@@ -100,8 +84,6 @@ class AddExViewController: UIViewController  , UITextFieldDelegate  , UIPickerVi
             text_fixld_detail?.keyboardType = .default
             text_fixld_detail?.delegate = self
             self.view.addSubview(text_fixld_detail!)
-            
-        
             text_fixld_date = UITextField.init(frame:(CGRect(x: 14,
                                                              y: 0.65 * self.view.frame.size.width ,
                                                              width: self.view.frame.size.width - 40 ,
@@ -118,9 +100,6 @@ class AddExViewController: UIViewController  , UITextFieldDelegate  , UIPickerVi
             datePicker.maximumDate = Date()
             self.view.addSubview(text_fixld_date!)
         
-      
-     
-        
 //        let labelButton = UILabel(frame: CGRect(x: 14 ,
 //                                          y: 0.80 * self.view.frame.size.width,
 //                                          width: self.view.frame.size.width  - 40 ,
@@ -136,42 +115,52 @@ class AddExViewController: UIViewController  , UITextFieldDelegate  , UIPickerVi
                                                        width: self.view.frame.size.width - 40 ,
                                                        height: 40))
         Button_Save_Data?.setTitle("บันทึก", for: .normal)
-
         Button_Save_Data?.backgroundColor = UIColor(red: 0.31, green: 0.76, blue: 0.59, alpha: 1.00)
         Button_Save_Data?.titleLabel?.textAlignment  = .center
         Button_Save_Data?.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)
         self.view.addSubview(Button_Save_Data!)
-    
-        
-    
-       
+
     }
     
     @IBAction func buttonTapped(_ sender: UIButton) {
-        if( text_fixld_type_income?.text != "" &&  text_fixld_detail?.text != "" &&  text_fixld_date?.text != "" ){
-            
-                let model =  Model_data()
-                model.expenses_Salary =   99999
-                model.expenses_Type = text_fixld_type_income?.text!
-                model.expenses_Description =  text_fixld_detail?.text!
-                model.expenses_Date =  Date()
-            
+        if(text_fixld_type_income?.text != "" &&  text_fixld_detail?.text != "" &&  text_fixld_date?.text != "" ){
            
-                 try! realm.write{
-                     realm.add(model)
-                     
-                     print(Realm.Configuration.defaultConfiguration.fileURL )
-                     
-                     print(model.expenses_Salary)
-                     print(model.expenses_Type)
-                     print(model.expenses_Description)
-                     print(model.expenses_Date)
-                 }
+            let v_expenses_number =  10
+            let v_expenses_Type = text_fixld_type_income?.text!
+            let v_expenses_Description = text_fixld_detail?.text!
+            let v_expenses_Date = Date()
+            
+            let contact = Model_data(expenses_Salary: v_expenses_number,
+                                     expenses_Type: v_expenses_Type,
+                                     expenses_Description: v_expenses_Description ,
+                                     expenses_Date: v_expenses_Date)
+            
+            
+                        
+                self.Model_data_Array.append(contact) //Append
+                DatabaseHelper.shared.saveContact(contact: contact)
+                   
+            self.dismiss(animated: true, completion: nil)
+//                let model =  Model_data()
+//                model.expenses_Salary =   15000
+//                model.expenses_Type = text_fixld_type_income?.text!
+//                model.expenses_Description =  text_fixld_detail?.text!
+//                model.expenses_Date =  Date()
 
-        
+//            let contact = Model_data()
+//            self.Model_data_Array.append(contact) //Append
+//                DatabaseHelper.shared.saveContact(contact: contact)
             
-          
-            
+//            self.Model_data_Array.reloadData()
+
+//                 try! realm.write{
+//                     realm.add(model)
+//                     print(Realm.Configuration.defaultConfiguration.fileURL )
+//                     print(model.expenses_Salary)
+//                     print(model.expenses_Type)
+//                     print(model.expenses_Description)
+//                     print(model.expenses_Date)
+//                 }
 //            let ac = UIAlertController(title: "Add Note", message: nil, preferredStyle: .alert)
 //
 //                   ac.addTextField(configurationHandler: .none)
@@ -199,12 +188,12 @@ class AddExViewController: UIViewController  , UITextFieldDelegate  , UIPickerVi
 //
 //            }
         }else{
-            
             let alert = UIAlertController(title: "ระบุค่าไม่ครบ", message: "ลองใหม่อีกครั้ง", preferredStyle: UIAlertController.Style.alert)
                 alert.addAction(UIAlertAction(title: "ตกลง", style: UIAlertAction.Style.default, handler: nil))
                 self.present(alert, animated: true, completion: nil)
         }
-            
+        
+       
     }
     
     

@@ -11,20 +11,20 @@ import RealmSwift
 
 
 class Model_data: Object  {
-    
-    @objc dynamic var expenses_Salary = 0
+    @objc dynamic var expenses_Salary: Int = 0
+//    @objc dynamic var expenses_Salary.value = RealmProperty<Int?>()
     @objc dynamic var expenses_Type: String?
     @objc dynamic var expenses_Description: String?
-    @objc dynamic var expenses_Date: Date?
+    @objc dynamic var expenses_Date: Date? = nil
     
-    
-    
-//    func configureCell(goal: Goal){
-////        self.goalDescriptionLbl.text = goal.goalDescription
-////        self.goalTypeLbl.text = goal.goalType
-////        self.goalProgressLbl.text =  String(describing: goal.goalProgress)
-//
-//    }
+    convenience init(expenses_Salary: Int, expenses_Type: String? ,  expenses_Description: String? , expenses_Date:Date? ){
+        self.init()
+        self.expenses_Salary = expenses_Salary
+        self.expenses_Type = expenses_Type
+        self.expenses_Description = expenses_Description
+        self.expenses_Date = expenses_Date
+        
+    }
 
     
     

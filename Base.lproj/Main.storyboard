@@ -161,6 +161,11 @@
             <point key="canvasLocation" x="29.600000000000001" y="69.715142428785612"/>
         </scene>
     </scenes>
+    <designables>
+        <designable name="HS0-fi-3Jt">
+            <size key="intrinsicContentSize" width="40" height="40"/>
+        </designable>
+    </designables>
     <resources>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
