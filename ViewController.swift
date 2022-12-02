@@ -7,6 +7,7 @@
 
 import UIKit
 import StickyButton
+import RealmSwift
 
 class ViewController: UIViewController  {
 
@@ -32,6 +33,8 @@ class ViewController: UIViewController  {
     
 //    var barChart = BarChartView()
     override func viewDidLoad() {
+        
+       
         
         TableView.delegate = self
         TableView.dataSource = self

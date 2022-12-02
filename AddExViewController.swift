@@ -6,12 +6,28 @@
 //
 
 import UIKit
+import MobileCoreServices
+import RealmSwift
+
 
 class AddExViewController: UIViewController  , UITextFieldDelegate  , UIPickerViewDelegate  , UIPickerViewDataSource  {
-   
+//   
+//    let realm = RealmService.shared.realm
+//    let add_Income_number   = realm.objects(add_Income_number.self )
+//    
+
+    let realm = try! Realm()
     var data_type_income: [String] = []
     var text_fixld_type_income: UITextField?
-    var text_fixld_date: UITextField?
+    
+    
+    
+    var Button_Save_Data: UIButton?
+    
+    
+    var text_fixld_date: UITextField?{
+        didSet { text_fixld_date?.AddDone_CancelToolbar()}
+    }
 
     var text_fixld_number: UITextField?{
         didSet { text_fixld_number?.AddDone_CancelToolbar()}
@@ -24,6 +40,13 @@ class AddExViewController: UIViewController  , UITextFieldDelegate  , UIPickerVi
     var datePicker = UIDatePicker()
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+    
+       
+       
+    
+
+        
             data_type_income = ["เงินเดือน", "โบนัส" , "เงินเก็บ" , "เงินได้จากขายเสื้อ", "เงินได้จากขายอาหารเสริม " ]
             view.backgroundColor = UIColor(red: 1.00, green: 0.26, blue: 0.26, alpha: 1.00)
             let label = UILabel(frame: CGRect(x: 0 ,
@@ -79,34 +102,114 @@ class AddExViewController: UIViewController  , UITextFieldDelegate  , UIPickerVi
             self.view.addSubview(text_fixld_detail!)
             
         
+            text_fixld_date = UITextField.init(frame:(CGRect(x: 14,
+                                                             y: 0.65 * self.view.frame.size.width ,
+                                                             width: self.view.frame.size.width - 40 ,
+                                                             height: 40)))
+            text_fixld_date?.text = formatDate(date: Date()) // todays Date
+            datePicker.addTarget(self, action: #selector(dateChange(datePicker:)), for: UIControl.Event.valueChanged)
+            text_fixld_date?.textColor = .black
+            text_fixld_date?.textAlignment = .center
+            text_fixld_date?.backgroundColor = .white
+            text_fixld_date?.borderStyle = .roundedRect
+            text_fixld_date?.inputView = datePicker
+            datePicker.datePickerMode = .date
+            datePicker.preferredDatePickerStyle = .wheels
+            datePicker.maximumDate = Date()
+            self.view.addSubview(text_fixld_date!)
+        
       
-//                datePicker.datePickerMode = .date
-//                datePicker.addTarget(self, action: #selector(dateChange(datePicker:)), for: UIControl.Event.valueChanged)
-//                datePicker.frame.size = CGSize(width: 0, height: 300)
-//                datePicker.preferredDatePickerStyle = .wheels
-//                datePicker.maximumDate = Date()
+     
+        
+//        let labelButton = UILabel(frame: CGRect(x: 14 ,
+//                                          y: 0.80 * self.view.frame.size.width,
+//                                          width: self.view.frame.size.width  - 40 ,
+//                                          height: 40))
+//        labelButton.textAlignment = .center
+//        labelButton.text = "เพิ่มรายการรายจ่าย"
+//        labelButton.textColor = .white
+//        labelButton.font = UIFont(name: "Halvetica", size: 17)
+//        self.view.addSubview(labelButton)
+        
+        Button_Save_Data = UIButton.init(frame: CGRect(x: 14,
+                                                       y: 0.80 * self.view.frame.size.width ,
+                                                       width: self.view.frame.size.width - 40 ,
+                                                       height: 40))
+        Button_Save_Data?.setTitle("บันทึก", for: .normal)
+
+        Button_Save_Data?.backgroundColor = UIColor(red: 0.31, green: 0.76, blue: 0.59, alpha: 1.00)
+        Button_Save_Data?.titleLabel?.textAlignment  = .center
+        Button_Save_Data?.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)
+        self.view.addSubview(Button_Save_Data!)
+    
+        
+    
+       
+    }
+    
+    @IBAction func buttonTapped(_ sender: UIButton) {
+        if( text_fixld_type_income?.text != "" &&  text_fixld_detail?.text != "" &&  text_fixld_date?.text != "" ){
+            
+                let model =  Model_data()
+                model.expenses_Salary =   99999
+                model.expenses_Type = text_fixld_type_income?.text!
+                model.expenses_Description =  text_fixld_detail?.text!
+                model.expenses_Date =  Date()
+            
+           
+                 try! realm.write{
+                     realm.add(model)
+                     
+                     print(Realm.Configuration.defaultConfiguration.fileURL )
+                     
+                     print(model.expenses_Salary)
+                     print(model.expenses_Type)
+                     print(model.expenses_Description)
+                     print(model.expenses_Date)
+                 }
+
+        
+            
+          
+            
+//            let ac = UIAlertController(title: "Add Note", message: nil, preferredStyle: .alert)
 //
-//                dateTF.inputView = datePicker
-//                dateTF.text = formatDate(date: Date()) // todays Date
+//                   ac.addTextField(configurationHandler: .none)
+//
+//                   ac.addAction(UIAlertAction(title: "Add", style: .default, handler: { (UIAlertAction) in
+//                         if  text_fixld_number.text  = ac.textFields?.first?.text
+//                       {
+//                           print(text_fixld_number!)
+//                       }
+//
+//                   }))
+//                   ac.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+//                   present(ac, animated: true, completion: nil)
+            
+//            let action = UIAlertAction(title: "Add Success ", style: .default ) {
+//                (_) in
+//                guard let text_num = text_fixld_number?.first?.text,
+//                      let text_type = text_fixld_type_income?[1].text,
+//                      let text_detail = text_fixld_detail?[2].text,
+//                      let text_date = text_fixld_date?.last?.text
+//                else { return}
+//
+//                completeion(text_num ,  text_type , text_detail , text_date  )
+//
+//
+//            }
+        }else{
+            
+            let alert = UIAlertController(title: "ระบุค่าไม่ครบ", message: "ลองใหม่อีกครั้ง", preferredStyle: UIAlertController.Style.alert)
+                alert.addAction(UIAlertAction(title: "ตกลง", style: UIAlertAction.Style.default, handler: nil))
+                self.present(alert, animated: true, completion: nil)
+        }
+            
+    }
+    
+    
+    func save(completion: (_ finished: Bool ) -> ()){
         
-        
-        text_fixld_date = UITextField.init(frame:(CGRect(x: 14,
-                                                                            y: 0.65 * self.view.frame.size.width ,
-                                                                            width: self.view.frame.size.width - 40 ,
-                                                                            height: 40)))
-        text_fixld_date?.text = formatDate(date: Date()) // todays Date
-                    datePicker.addTarget(self, action: #selector(dateChange(datePicker:)), for: UIControl.Event.valueChanged)
-        text_fixld_date?.textColor = .black
-        text_fixld_date?.textAlignment = .center
-        text_fixld_date?.backgroundColor = .white
-        text_fixld_date?.borderStyle = .roundedRect
-        text_fixld_date?.inputView = datePicker
-                    datePicker.datePickerMode = .date
-                    datePicker.preferredDatePickerStyle = .wheels
-                    datePicker.maximumDate = Date()
-            //        datePicker.dataSource = self
-            //        datePicker.delegate = self
-                    self.view.addSubview(text_fixld_date!)
         
     }
     
