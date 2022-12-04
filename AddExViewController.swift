@@ -24,6 +24,7 @@ class AddExViewController: UIViewController  , UITextFieldDelegate  , UIPickerVi
     var text_fixld_date: UITextField?{
         didSet { text_fixld_date?.AddDone_CancelToolbar()}
     }
+
     var text_fixld_number: UITextField?{
         didSet { text_fixld_number?.AddDone_CancelToolbar()}
     }
@@ -46,10 +47,12 @@ class AddExViewController: UIViewController  , UITextFieldDelegate  , UIPickerVi
             label.textColor = .white
             label.font = UIFont(name: "Halvetica", size: 17)
             self.view.addSubview(label)
+            
             text_fixld_number = UITextField.init(frame:(CGRect(x: 14,
                                                                y: 0.15 * self.view.frame.size.width,
                                                                width: self.view.frame.size.width - 40  ,
                                                                height: 40)))
+          
             text_fixld_number?.placeholder = "ระบุเงิน"
             text_fixld_number?.textColor = .black
             text_fixld_number?.textAlignment = .center
@@ -123,12 +126,17 @@ class AddExViewController: UIViewController  , UITextFieldDelegate  , UIPickerVi
     }
     
     @IBAction func buttonTapped(_ sender: UIButton) {
+       
         if(text_fixld_type_income?.text != "" &&  text_fixld_detail?.text != "" &&  text_fixld_date?.text != "" ){
-           
-            let v_expenses_number =  10
+        
+            let v_expenses_number =  Int(text_fixld_number?.text! ?? "" ) ?? 0
             let v_expenses_Type = text_fixld_type_income?.text!
             let v_expenses_Description = text_fixld_detail?.text!
             let v_expenses_Date = Date()
+            
+            
+            
+            
             
             let contact = Model_data(expenses_Salary: v_expenses_number,
                                      expenses_Type: v_expenses_Type,
@@ -136,7 +144,7 @@ class AddExViewController: UIViewController  , UITextFieldDelegate  , UIPickerVi
                                      expenses_Date: v_expenses_Date)
             
             
-                        
+                          
                 self.Model_data_Array.append(contact) //Append
                 DatabaseHelper.shared.saveContact(contact: contact)
                    

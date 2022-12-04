@@ -11,8 +11,7 @@ import RealmSwift
 
 
 class Model_data: Object  {
-    @objc dynamic var expenses_Salary: Int = 0
-//    @objc dynamic var expenses_Salary.value = RealmProperty<Int?>()
+    @objc dynamic var expenses_Salary: Int = 0 
     @objc dynamic var expenses_Type: String?
     @objc dynamic var expenses_Description: String?
     @objc dynamic var expenses_Date: Date? = nil

@@ -8,6 +8,7 @@
 import UIKit
 import StickyButton
 import RealmSwift
+import SwiftUI
 
 class ViewController: UIViewController  {
 
@@ -75,14 +76,17 @@ class ViewController: UIViewController  {
              
         TodateSectionTitles = [String](Activity_Header.keys)
         TodateSectionTitles = TodateSectionTitles.sorted(by: {$0 < $1})
-        Button_action.addItem(title: "เพิ่มรายรับ", icon: UIImage(named: "icon1")){
+        Button_action.addItem(title: "เพิ่มรายรับ", icon: UIImage(systemName: "dollarsign.circle" )){
             item in
             self.present(self.AddINView(forType: "Home"), animated: true, completion: nil)
         }
-        Button_action.addItem(title: "รายจ่าย", icon: UIImage(named: "icon2")){
+        Button_action.addItem(title: "เพิ่มรายจ่าย", icon: UIImage(systemName: "dollarsign.square")){
             item in
-//            item.addTarget(self, action: #selector(AddNewEx) , for: .touchUpInside)
             self.present(self.AddExView(forType: "EX") , animated: true, completion: nil)
+        }
+        Button_action.addItem(title: "ตั้งค่า", icon: UIImage(systemName: "gearshape")){
+            item in
+            self.present(self.SetingView(forType: "Seting") , animated: true, completion: nil)
         }
     }
     
@@ -93,19 +97,25 @@ class ViewController: UIViewController  {
         TableView.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
     }
 
+  
     private func AddINView(forType type: String) -> UIViewController {
         let vc = AddINViewController()
         vc.modalPresentationStyle = .pageSheet
         navigationController?.pushViewController(vc, animated: true)
         return vc
   }
-    
     private func AddExView(forType type: String) -> UIViewController {
         let vcEX = AddExViewController()
         vcEX.modalPresentationStyle = .pageSheet
         navigationController?.pushViewController(vcEX, animated: true)
         return vcEX
   }
+    private func SetingView(forType type: String) -> UIViewController {
+        let vcseting = AddSetingViewController()
+        vcseting.modalPresentationStyle = .pageSheet
+        navigationController?.pushViewController(vcseting , animated: true)
+        return vcseting
+    }
     
 //
 //    private func AddExView(){
@@ -166,6 +176,8 @@ extension ViewController : UITableViewDelegate  , UITableViewDataSource {
 //     func numberOfSections(in tableView: UITableView) -> Int {
 //           return Model_data_Array.count
 //       }
+    
+   
 
         func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 //           let dataIn_ExsKey = TodateSectionTitles[section]
@@ -194,9 +206,18 @@ extension ViewController : UITableViewDelegate  , UITableViewDataSource {
             }
             
             cell = UITableViewCell(style: .subtitle, reuseIdentifier: "Cell")
-//            cell.textLabel?.text = Model_data_Array[indexPath.row].expenses_Salary
             cell.textLabel?.text = Model_data_Array[indexPath.row].expenses_Type
-            cell.detailTextLabel?.text = Model_data_Array[indexPath.row].expenses_Description
+           cell.detailTextLabel?.text = Model_data_Array[indexPath.row].expenses_Description
+            cell.textLabel?.text = String(Model_data_Array[indexPath.row].expenses_Salary)
+            
+//            cell.detailTextLabel?.text = dateFormatter.string(from: Model_data_Array[indexPath.row].expenses_Date ?? date )
+//
+            
+            
+    
+                                                              
+                                                    
+            
             
             cell.layer.cornerRadius  =  15
                           cell.layer.shadowColor = UIColor.gray.cgColor
