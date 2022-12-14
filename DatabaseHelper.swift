@@ -14,6 +14,7 @@ class DatabaseHelper{
     
         static let shared = DatabaseHelper()
         private var realm = try! Realm()
+            
     
     func  getDatabasePath() -> URL?{
             
@@ -24,6 +25,14 @@ class DatabaseHelper{
         
         try! realm.write({
             
+            realm.add(contact)
+            
+        })
+    }
+    
+    
+    func saveSetting(contact: Model_Setting ){
+        try! realm.write({
             realm.add(contact)
             
         })

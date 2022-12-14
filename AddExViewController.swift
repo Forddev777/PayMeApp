@@ -11,14 +11,13 @@ import RealmSwift
 
 
 class AddExViewController: UIViewController  , UITextFieldDelegate  , UIPickerViewDelegate  , UIPickerViewDataSource  {
-//   
-//    let realm = RealmService.shared.realm
-//    let add_Income_number   = realm.objects(add_Income_number.self )
-//
-    var Model_data_Array = [Model_data]()
 
-//    let realm = try! Realm()
+    
+
+    var Model_data_Array = [Model_data]()
     var data_type_income: [String] = []
+    
+//    var data_type_income = [Model_Setting]()
     var text_fixld_type_income: UITextField?
     var Button_Save_Data: UIButton?
     var text_fixld_date: UITextField?{
@@ -33,9 +32,12 @@ class AddExViewController: UIViewController  , UITextFieldDelegate  , UIPickerVi
     }
     var viewPicker =  UIPickerView()
     var datePicker = UIDatePicker()
+    var text_Ex: String = "รายจ่าย"
+    let dateFormatter = DateFormatter()
+    var callbackSuccess: (() -> ())?
     override func viewDidLoad() {
         super.viewDidLoad()
-            data_type_income = ["เงินเดือน", "โบนัส" , "เงินเก็บ" , "เงินได้จากขายเสื้อ", "เงินได้จากขายอาหารเสริม " ]
+        data_type_income = ["ค่าคอนโด", "ค่าข้าว" , "ของใช้ส่วนตัว" , "ค่าผ่อนรถ", "เที่ยวประจำเดือน" ]
             view.backgroundColor = UIColor(red: 1.00, green: 0.26, blue: 0.26, alpha: 1.00)
             let label = UILabel(frame: CGRect(x: 0 ,
                                               y: 0.05 * self.view.frame.size.width,
@@ -43,16 +45,16 @@ class AddExViewController: UIViewController  , UITextFieldDelegate  , UIPickerVi
                                               height: 25))
             label.textAlignment = .center
             label.text = "เพิ่มรายการรายจ่าย"
-            label.backgroundColor = .brown
             label.textColor = .white
-            label.font = UIFont(name: "Halvetica", size: 17)
+            label.font = UIFont(name: "Halvetica", size: 25)
             self.view.addSubview(label)
             
-            text_fixld_number = UITextField.init(frame:(CGRect(x: 14,
-                                                               y: 0.15 * self.view.frame.size.width,
-                                                               width: self.view.frame.size.width - 40  ,
-                                                               height: 40)))
+        text_fixld_number = UITextField.init(frame:(CGRect(x: 15 ,
+                                                           y: self.view.frame.size.height * 0.1 ,
+                                                           width: self.view.frame.size.width * 0.90  ,
+                                                           height: self.view.frame.size.height * 0.05 )))
           
+        
             text_fixld_number?.placeholder = "ระบุเงิน"
             text_fixld_number?.textColor = .black
             text_fixld_number?.textAlignment = .center
@@ -61,10 +63,10 @@ class AddExViewController: UIViewController  , UITextFieldDelegate  , UIPickerVi
             text_fixld_number?.keyboardType = .numberPad
             text_fixld_number?.delegate = self
             self.view.addSubview(text_fixld_number!)
-            text_fixld_type_income = UITextField.init(frame:(CGRect(x: 14,
-                                                                    y: 0.30 * self.view.frame.size.width ,
-                                                                    width: self.view.frame.size.width - 40 ,
-                                                                    height: 40)))
+            text_fixld_type_income = UITextField.init(frame:(CGRect(x: 15,
+                                                                    y: self.view.frame.size.height * 0.18,
+                                                                    width: self.view.frame.size.width * 0.90 ,
+                                                                    height: self.view.frame.size.height * 0.05)))
             text_fixld_type_income?.placeholder = "ระบุประเภทเงินเดือน"
             text_fixld_type_income?.textColor = .black
             text_fixld_type_income?.textAlignment = .center
@@ -75,10 +77,10 @@ class AddExViewController: UIViewController  , UITextFieldDelegate  , UIPickerVi
             viewPicker.delegate = self
             self.view.addSubview(text_fixld_type_income!)
             text_fixld_detail = UITextField.init(frame:
-                                                (CGRect(x: 14,
-                                                        y: 0.45 * self.view.frame.size.width,
-                                                        width: self.view.frame.size.width - 40  ,
-                                                        height: 60)))
+                                                (CGRect(x: 15,
+                                                        y: self.view.frame.size.height * 0.26,
+                                                        width: self.view.frame.size.width * 0.90  ,
+                                                        height: self.view.frame.size.height * 0.2)))
             text_fixld_detail?.placeholder = "รายละเอียดเพิ่มเติม"
             text_fixld_detail?.textColor = .black
             text_fixld_detail?.textAlignment = .center
@@ -87,11 +89,12 @@ class AddExViewController: UIViewController  , UITextFieldDelegate  , UIPickerVi
             text_fixld_detail?.keyboardType = .default
             text_fixld_detail?.delegate = self
             self.view.addSubview(text_fixld_detail!)
-            text_fixld_date = UITextField.init(frame:(CGRect(x: 14,
-                                                             y: 0.65 * self.view.frame.size.width ,
-                                                             width: self.view.frame.size.width - 40 ,
-                                                             height: 40)))
-            text_fixld_date?.text = formatDate(date: Date()) // todays Date
+            text_fixld_date = UITextField.init(frame:(CGRect(x: 15,
+                                                             y: self.view.frame.size.height * 0.48 ,
+                                                             width: self.view.frame.size.width * 0.90 ,
+                                                             height: self.view.frame.size.height * 0.05)))
+            text_fixld_date?.text = formatDate(date: Date())
+        
             datePicker.addTarget(self, action: #selector(dateChange(datePicker:)), for: UIControl.Event.valueChanged)
             text_fixld_date?.textColor = .black
             text_fixld_date?.textAlignment = .center
@@ -100,6 +103,7 @@ class AddExViewController: UIViewController  , UITextFieldDelegate  , UIPickerVi
             text_fixld_date?.inputView = datePicker
             datePicker.datePickerMode = .date
             datePicker.preferredDatePickerStyle = .wheels
+            datePicker.timeZone = NSTimeZone.local
             datePicker.maximumDate = Date()
             self.view.addSubview(text_fixld_date!)
         
@@ -113,41 +117,41 @@ class AddExViewController: UIViewController  , UITextFieldDelegate  , UIPickerVi
 //        labelButton.font = UIFont(name: "Halvetica", size: 17)
 //        self.view.addSubview(labelButton)
         
-        Button_Save_Data = UIButton.init(frame: CGRect(x: 14,
-                                                       y: 0.80 * self.view.frame.size.width ,
-                                                       width: self.view.frame.size.width - 40 ,
-                                                       height: 40))
+        Button_Save_Data = UIButton.init(frame: CGRect(x: 15,
+                                                       y: self.view.frame.size.height * 0.58,
+                                                       width: self.view.frame.size.width * 0.90,
+                                                       height: self.view.frame.size.height * 0.05))
         Button_Save_Data?.setTitle("บันทึก", for: .normal)
         Button_Save_Data?.backgroundColor = UIColor(red: 0.31, green: 0.76, blue: 0.59, alpha: 1.00)
         Button_Save_Data?.titleLabel?.textAlignment  = .center
         Button_Save_Data?.addTarget(self, action: #selector(buttonTapped(_:)), for: .touchUpInside)
         self.view.addSubview(Button_Save_Data!)
 
+        
     }
     
+
     @IBAction func buttonTapped(_ sender: UIButton) {
        
+        print(text_fixld_date!)
+        
         if(text_fixld_type_income?.text != "" &&  text_fixld_detail?.text != "" &&  text_fixld_date?.text != "" ){
         
+//            let expensesNumber = Int
             let v_expenses_number =  Int(text_fixld_number?.text! ?? "" ) ?? 0
             let v_expenses_Type = text_fixld_type_income?.text!
             let v_expenses_Description = text_fixld_detail?.text!
-            let v_expenses_Date = Date()
-            
-            
-            
-            
-            
+            let v_expenses_text_heidden = text_Ex.self
+            let v_expenses_Date =  Date()
             let contact = Model_data(expenses_Salary: v_expenses_number,
                                      expenses_Type: v_expenses_Type,
                                      expenses_Description: v_expenses_Description ,
+                                     expenses_text_hidden: v_expenses_text_heidden,
                                      expenses_Date: v_expenses_Date)
-            
-            
-                          
+
                 self.Model_data_Array.append(contact) //Append
                 DatabaseHelper.shared.saveContact(contact: contact)
-                   
+            self.callbackSuccess?()
             self.dismiss(animated: true, completion: nil)
 //                let model =  Model_data()
 //                model.expenses_Salary =   15000
@@ -245,9 +249,12 @@ class AddExViewController: UIViewController  , UITextFieldDelegate  , UIPickerVi
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         data_type_income[row]
+   
+            
        }
-    
+
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+      
         text_fixld_type_income!.text = data_type_income[row]
         
 
@@ -298,7 +305,7 @@ extension UITextField  {
     @objc func cancelButtonTapped() {
         self.resignFirstResponder()
         
-        
+                                  
     }
     
     @objc func doneButtonTapped() { self.resignFirstResponder()}

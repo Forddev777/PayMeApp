@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19455" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19454"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="TableViewCell" id="JFz-yz-B2J" customClass="TableViewCell" customModule="PayMeApp" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="90"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="JFz-yz-B2J" id="hat-Fy-FdZ">
+                <rect key="frame" x="0.0" y="0.0" width="414" height="90"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9bn-ln-Ten">
+                        <rect key="frame" x="7" y="10" width="70" height="70"/>
+                        <color key="backgroundColor" red="0.30196078430000001" green="0.75294117650000003" blue="0.58039215690000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                    </imageView>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="เวลา" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oVN-jy-dEL">
+                        <rect key="frame" x="85" y="10" width="88" height="20"/>
+                        <color key="backgroundColor" red="0.30196078430000001" green="0.75294117650000003" blue="0.58039215690000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="เงินเดือน" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xCN-HV-dPi">
+                        <rect key="frame" x="85" y="59" width="200" height="20"/>
+                        <color key="backgroundColor" red="0.30196078430000001" green="0.75294117650000003" blue="0.58039215690000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="9999" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WBf-bI-mRP">
+                        <rect key="frame" x="258" y="9" width="150" height="21"/>
+                        <color key="backgroundColor" red="0.30196078430000001" green="0.75294117650000003" blue="0.58039215690000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="150" id="3Gu-k1-Z8J"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="รายจ่าย" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XFN-eo-NFX">
+                        <rect key="frame" x="352.5" y="55" width="55.5" height="21"/>
+                        <color key="backgroundColor" red="0.30196078430000001" green="0.75294117650000003" blue="0.58039215690000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
+                </subviews>
+                <constraints>
+                    <constraint firstAttribute="trailing" secondItem="WBf-bI-mRP" secondAttribute="trailing" constant="6" id="3BT-b9-yWS"/>
+                    <constraint firstItem="oVN-jy-dEL" firstAttribute="top" secondItem="hat-Fy-FdZ" secondAttribute="top" constant="10" id="AKW-YV-kQ4"/>
+                    <constraint firstItem="oVN-jy-dEL" firstAttribute="leading" secondItem="9bn-ln-Ten" secondAttribute="trailing" constant="8" id="CtT-Ed-hXd"/>
+                    <constraint firstItem="WBf-bI-mRP" firstAttribute="top" secondItem="hat-Fy-FdZ" secondAttribute="top" constant="9" id="CuO-w9-I68"/>
+                    <constraint firstAttribute="bottom" secondItem="9bn-ln-Ten" secondAttribute="bottom" constant="10" id="Cz0-Ee-jdB"/>
+                    <constraint firstAttribute="trailing" secondItem="XFN-eo-NFX" secondAttribute="trailing" constant="6" id="ENO-tu-Qb3"/>
+                    <constraint firstItem="9bn-ln-Ten" firstAttribute="leading" secondItem="hat-Fy-FdZ" secondAttribute="leading" constant="7" id="EYS-xa-a76"/>
+                    <constraint firstItem="xCN-HV-dPi" firstAttribute="leading" secondItem="9bn-ln-Ten" secondAttribute="trailing" constant="8" id="FEN-iK-Vca"/>
+                    <constraint firstAttribute="bottom" secondItem="XFN-eo-NFX" secondAttribute="bottom" constant="14" id="UGZ-oW-B6F"/>
+                    <constraint firstItem="9bn-ln-Ten" firstAttribute="top" secondItem="hat-Fy-FdZ" secondAttribute="top" constant="10" id="hug-lt-6o0"/>
+                    <constraint firstItem="xCN-HV-dPi" firstAttribute="bottom" secondItem="hat-Fy-FdZ" secondAttribute="bottomMargin" id="vfy-H2-GoL"/>
+                </constraints>
+            </tableViewCellContentView>
+            <connections>
+                <outlet property="image_view" destination="9bn-ln-Ten" id="DxN-Wz-MgS"/>
+                <outlet property="input_number" destination="WBf-bI-mRP" id="gdp-Tg-MmO"/>
+                <outlet property="text_H_label" destination="xCN-HV-dPi" id="b37-N4-LPR"/>
+                <outlet property="time_label" destination="oVN-jy-dEL" id="Hk3-6z-cBF"/>
+                <outlet property="type_Label" destination="XFN-eo-NFX" id="ocC-hm-997"/>
+            </connections>
+            <point key="canvasLocation" x="-3188" y="-101"/>
+        </tableViewCell>
+    </objects>
+</document>

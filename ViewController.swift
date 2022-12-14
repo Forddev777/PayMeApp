@@ -8,7 +8,6 @@
 import UIKit
 import StickyButton
 import RealmSwift
-import SwiftUI
 
 class ViewController: UIViewController  {
 
@@ -22,25 +21,43 @@ class ViewController: UIViewController  {
     @IBOutlet weak var Label_Time: UILabel!
     @IBOutlet weak var View_Grahp: UIView!
     @IBOutlet weak var TableView: UITableView!
-//
+    let MyCellId = "MyTableViewCell"
 //    @IBOutlet weak var Label_text: UILabel!
-    var Activity_Header = [String:[String]]()
+    var Activity_Header = [Date:[String]]()
       var TodateSectionTitles = [String]()
       var dataIn_Exs: [String] = []
     
-    //
+  
+    
    @IBOutlet weak var Button_action: StickyButton!
-    
-    
 //    var barChart = BarChartView()
+
+    
+    
+    private func firstDayOfMonth(date: Date) -> Date {
+        let calendar = Calendar.current
+        let components = calendar.dateComponents([.year, .month], from: date)
+        return calendar.date(from: components)!
+    }
+    
+    struct MonthSection : Comparable  {
+        var month: Date
+        var headlines: [Model_data]
+        static func < (lhs: MonthSection, rhs: MonthSection) -> Bool {
+            return lhs.month < rhs.month
+        }
+        static func == (lhs: MonthSection, rhs: MonthSection) -> Bool {
+            return lhs.month == rhs.month
+        }
+    }
+    
+
     override func viewDidLoad() {
-        
-        
         configuration()
-        
         super.viewDidLoad()
-     
-        
+        TableView.register(UINib.init(nibName: MyCellId  , bundle: nil), forCellReuseIdentifier: "DefaultCell")
+        TableView.rowHeight = UITableView.automaticDimension
+        TableView.separatorColor = UIColor.clear
         
         dateFormatter.dateFormat = "dd MMMM yyyy"
         TimeFormatter.dateFormat = "HH:mm"
@@ -57,25 +74,15 @@ class ViewController: UIViewController  {
         Label_Time.layer.shadowOpacity = 2.0
         Label_Time.layer.shadowOffset = CGSize(width: 1, height: 4)
         Label_Time.layer.masksToBounds = false
-//        barChart.delegate = self
+
+        let groups = Dictionary(grouping: self.Model_data_Array) { (Model_data_Array) -> Date  in
+            return firstDayOfMonth(date: Model_data_Array.expenses_Date!)
+            
+        }
+//        self.Model_data_Array = groups.map(MonthSection.init(month: Date , headlines: Model_data_Array.expenses_Date! )).sorted()
+
         
-        dataIn_Exs = ["10/11/2022_เงินเดือน",
-                      "10/11/2022ลบ_ค่าคอนโด","15/11/2022บวก_เงินโบนัส",
-                      "17/11/2022ลบ_โอมากำเสะ พระราม 2",
-                      "17/11/2022ลบ_ภาษี","17/11/2022บวก_เงินบันผล","17/11/2022จ่าย_อาหาร 100 บ ",
-                      "10/11/2022จ่าย_เที่ยว 777 บ","15/11/2022จ่าย_เที่ยวเกาะ 777 บ"]
-             for dataIn_Exs in dataIn_Exs {
-                 let dataIn_ExsKey = String(dataIn_Exs.prefix(5))
-                 if var dataIn_ExsValue = Activity_Header[dataIn_ExsKey] {
-                     dataIn_ExsValue.append(dataIn_Exs)
-                     Activity_Header[dataIn_ExsKey] = dataIn_ExsValue
-                 } else {
-                     Activity_Header[dataIn_ExsKey] = [dataIn_Exs]
-                 }
-             }
-             
-        TodateSectionTitles = [String](Activity_Header.keys)
-        TodateSectionTitles = TodateSectionTitles.sorted(by: {$0 < $1})
+        
         Button_action.addItem(title: "เพิ่มรายรับ", icon: UIImage(systemName: "dollarsign.circle" )){
             item in
             self.present(self.AddINView(forType: "Home"), animated: true, completion: nil)
@@ -95,25 +102,37 @@ class ViewController: UIViewController  {
         TableView.dataSource = self
         Model_data_Array = DatabaseHelper.shared.getAllContacts()
         TableView.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
+        
     }
 
   
     private func AddINView(forType type: String) -> UIViewController {
         let vc = AddINViewController()
-        vc.modalPresentationStyle = .pageSheet
-        navigationController?.pushViewController(vc, animated: true)
+            vc.callbackSuccess = {
+                     self.Model_data_Array = DatabaseHelper.shared.getAllContacts()
+                     self.TableView.reloadData()
+            }
+            vc.modalPresentationStyle = .pageSheet
+            navigationController?.pushViewController(vc, animated: true)
+          
         return vc
   }
     private func AddExView(forType type: String) -> UIViewController {
         let vcEX = AddExViewController()
-        vcEX.modalPresentationStyle = .pageSheet
-        navigationController?.pushViewController(vcEX, animated: true)
+            vcEX.callbackSuccess = {
+                self.Model_data_Array = DatabaseHelper.shared.getAllContacts()
+                self.TableView.reloadData()
+            }
+            vcEX.modalPresentationStyle = .pageSheet
+            navigationController?.pushViewController(vcEX, animated: true)
         return vcEX
   }
     private func SetingView(forType type: String) -> UIViewController {
         let vcseting = AddSetingViewController()
+       
         vcseting.modalPresentationStyle = .pageSheet
         navigationController?.pushViewController(vcseting , animated: true)
+    
         return vcseting
     }
     
@@ -139,7 +158,7 @@ class ViewController: UIViewController  {
 //                                 width:  self.View_Grahp.frame.size.width,
 //                                 height: self.View_Grahp.frame.size.height  )
 //
-    
+//
 //        View_Grahp.addSubview(barChart)
 //
 //        var entries = [BarChartDataEntry]()
@@ -159,8 +178,8 @@ class ViewController: UIViewController  {
     }
     
     override func viewWillAppear(_ animated: Bool){
+       
         self.TableView.reloadData()
-        print(self.TableView.reloadData())
         
     }
     
@@ -169,71 +188,105 @@ class ViewController: UIViewController  {
 }
 
 
-
-
-
 extension ViewController : UITableViewDelegate  , UITableViewDataSource {
-//     func numberOfSections(in tableView: UITableView) -> Int {
-//           return Model_data_Array.count
-//       }
-    
-   
 
-        func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-//           let dataIn_ExsKey = TodateSectionTitles[section]
-//           if let dataIn_ExsValue = Model_data_Array[dataIn_ExsKey] {
-//               return dataIn_ExsValue.count
-//           }
-            return Model_data_Array.count
+    
+    
+         func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+//            let dataIn_ExsKey = TodateSectionTitles[section]
+//            if let dataIn_ExsValue = Model_data_Array[dataIn_ExsKey] {
+//                return dataIn_ExsValue.count
+//            }
+             return Model_data_Array.count
+             
+        }
+        func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+                let cell = tableView.dequeueReusableCell(withIdentifier: "DefaultCell", for: indexPath) as! MyTableViewCell
+                    cell.selectionStyle = .none
+                    cell.number_label?.text = String(Model_data_Array[indexPath.row].expenses_Salary)
+                    cell.type_header_label?.text = Model_data_Array[indexPath.row].expenses_Type
+                    cell.type_text_sta?.text = Model_data_Array[indexPath.row].expenses_text_hidden
+            cell.time_label?.text  =  dateFormatter.string(from: Model_data_Array[indexPath.row].expenses_Date ??  date )
+            
+            
+                            if(cell.type_text_sta?.text == "รายจ่าย"){
+                                cell.number_label?.textColor = UIColor(red: 1.00, green: 0.26, blue: 0.26, alpha: 1.00)
+                            }else{
+                                cell.number_label?.textColor = UIColor(red: 0.31, green: 0.76, blue: 0.59, alpha: 1.00)
+                            }
+//                  cell.time_label?.text = Model_data_Array[indexPath.row].expenses_Description
+//                    cell.time_label?.text =  (Model_data_Array[indexPath.row].expenses_Date)
+//                    cell.time_label?.text =  Date(Model_data_Array[indexPath.row].expenses_Date ?? Date() )
+         
+        
+//                    cell.type_text_sta?.text = "จ่าย / รับ "
+//                    cell.time_label?.text = "เวลา"
+                    cell.layer.cornerRadius  =  15
+                    cell.layer.shadowColor = UIColor.gray.cgColor
+                    cell.layer.shadowRadius = 3.0
+                    cell.layer.shadowOpacity = 2.0
+                    cell.layer.shadowOffset = CGSize(width: 2, height: 4)
+                    cell.layer.masksToBounds = false
+                        return cell
+            }
+    
+     func numberOfSections(in tableView: UITableView) -> Int {
+           
+         return Model_data_Array.count
        }
 
-        func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-
-//           let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
-//           let dataIn_ExsKey = TodateSectionTitles[indexPath.section]
-//           if let dataIn_ExsValue = Activity_Header[dataIn_ExsKey] {
-//               cell.textLabel?.text = dataIn_ExsValue[indexPath.row]
-//               cell.layer.cornerRadius  =  15
-//               cell.layer.shadowColor = UIColor.gray.cgColor
-//               cell.layer.shadowRadius = 3.0
-//               cell.layer.shadowOpacity = 2.0
-//               cell.layer.shadowOffset = CGSize(width: 2, height: 4)
-//               cell.layer.masksToBounds = false
-//           }
+   
+    
+      
+//        func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
             
-            guard var cell = tableView.dequeueReusableCell(withIdentifier: "Cell") else{
-                return UITableViewCell()
-            }
+//
+//            let MyCell = TableView.dequeueReusableCell(withIdentifier: "MyCell", for: indexPath ) as! MyTableViewCell
+//            MyCell.type_header_label?.text = Model_data_Array[indexPath.row].expenses_Type
+//            MyCell.time_label?.text = "เวลา"
+//            MyCell.number_label?.text = String(Model_data_Array[indexPath.row].expenses_Salary)
+//            MyCell.type_text_sta?.text = "จ่าย / รับ "
             
-            cell = UITableViewCell(style: .subtitle, reuseIdentifier: "Cell")
-            cell.textLabel?.text = Model_data_Array[indexPath.row].expenses_Type
-           cell.detailTextLabel?.text = Model_data_Array[indexPath.row].expenses_Description
-            cell.textLabel?.text = String(Model_data_Array[indexPath.row].expenses_Salary)
-            
-//            cell.detailTextLabel?.text = dateFormatter.string(from: Model_data_Array[indexPath.row].expenses_Date ?? date )
+//            let Cell = TableView.dequeueReusableCell(withIdentifier: "TableViewCell", for: indexPath) as! TableViewCell
+//
 //
             
+//            guard var cell = tableView.dequeueReusableCell(withIdentifier: "Cell") else{
+//                return UITableViewCell()
+//            }
             
-    
+        
+//            let cell = tableView.dequeueReusableCell(withIdentifier: "TableViewCell", for: indexPath) as! TableViewCell
+//            cell = UITableViewCell(style: .subtitle, reuseIdentifier: "Cell")
+            
+//            cell.text_H_label?.text = Model_data_Array[indexPath.row].expenses_Type
+//             cell.detailTextLabel?.text = Model_data_Array[indexPath.row].expenses_Description
+            
+//            cell.input_number?.text = String(Model_data_Array[indexPath.row].expenses_Salary)
+//            cell.type_Label?.text = "จ่าย / รับ "
+//
+//
                                                               
-                                                    
-            
-            
-            cell.layer.cornerRadius  =  15
-                          cell.layer.shadowColor = UIColor.gray.cgColor
-                          cell.layer.shadowRadius = 3.0
-                          cell.layer.shadowOpacity = 2.0
-                          cell.layer.shadowOffset = CGSize(width: 2, height: 4)
-                          cell.layer.masksToBounds = false
-           return cell
-       }
-       
-//        func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-//           return Model_data_Array[section]
+                        
+//            Cell.layer.cornerRadius  =  15
+//            Cell.layer.shadowColor = UIColor.gray.cgColor
+//            Cell.layer.shadowRadius = 3.0
+//            Cell.layer.shadowOpacity = 2.0
+//            Cell.layer.shadowOffset = CGSize(width: 2, height: 4)
+//            Cell.layer.masksToBounds = false
+//           return MyCell
 //       }
-    
-    
        
+    
+         func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+             let section = self.Model_data_Array[section]
+               let date = section.expenses_Date!
+               let dateFormatter = DateFormatter()
+               dateFormatter.dateFormat = "MMMM yyyy"
+               return dateFormatter.string(from: date)
+         
+        }
+    
 //        func sectionIndexTitles(for tableView: UITableView) -> [String]? {
 //           return TodateSectionTitles
 //       }

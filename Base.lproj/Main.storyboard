@@ -115,12 +115,13 @@
                                 <rect key="frame" x="14" y="310" width="347" height="357"/>
                                 <color key="backgroundColor" red="0.30196078430000001" green="0.75294117650000003" blue="0.58039215690000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="Cell" rowHeight="283" id="car-XP-hj5" userLabel="Cell" customClass="TableViewCell" customModule="PayMeApp" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="DefaultCell" rowHeight="283" id="car-XP-hj5" userLabel="DefaultCell" customClass="MyTableViewCell" customModule="PayMeApp" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="44.5" width="347" height="283"/>
                                         <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="car-XP-hj5" id="tKy-bO-zCg">
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="car-XP-hj5" id="tKy-bO-zCg" customClass="MyTableViewCell" customModule="PayMeApp" customModuleProvider="target">
                                             <rect key="frame" x="0.0" y="0.0" width="347" height="283"/>
                                             <autoresizingMask key="autoresizingMask"/>
+                                            <color key="backgroundColor" systemColor="labelColor"/>
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                 </prototypes>
@@ -167,6 +168,9 @@
         </designable>
     </designables>
     <resources>
+        <systemColor name="labelColor">
+            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
