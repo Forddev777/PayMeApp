@@ -11,13 +11,14 @@ import RealmSwift
 
 class ViewController: UIViewController  {
 
-  
     var Model_data_Array = [Model_data]()
 //, ChartViewDelegate
     @IBOutlet weak var Label_ToDate: UILabel!
     let date = Date()
     let dateFormatter = DateFormatter()
     let TimeFormatter = DateFormatter()
+    let numberFormatter = NumberFormatter()
+   
     @IBOutlet weak var Label_Time: UILabel!
     @IBOutlet weak var View_Grahp: UIView!
     @IBOutlet weak var TableView: UITableView!
@@ -27,7 +28,7 @@ class ViewController: UIViewController  {
       var TodateSectionTitles = [String]()
       var dataIn_Exs: [String] = []
     
-  
+    var sections = [MonthSection]()
     
    @IBOutlet weak var Button_action: StickyButton!
 //    var barChart = BarChartView()
@@ -51,6 +52,11 @@ class ViewController: UIViewController  {
         }
     }
     
+    private func parseDate(_ str : String) -> Date {
+        let dateFormat = DateFormatter()
+        dateFormat.dateFormat = "yyyy-MM-dd"
+        return dateFormat.date(from: str)!
+    }
 
     override func viewDidLoad() {
         configuration()
@@ -75,12 +81,13 @@ class ViewController: UIViewController  {
         Label_Time.layer.shadowOffset = CGSize(width: 1, height: 4)
         Label_Time.layer.masksToBounds = false
 
-        let groups = Dictionary(grouping: self.Model_data_Array) { (Model_data_Array) -> Date  in
-            return firstDayOfMonth(date: Model_data_Array.expenses_Date!)
-            
-        }
-//        self.Model_data_Array = groups.map(MonthSection.init(month: Date , headlines: Model_data_Array.expenses_Date! )).sorted()
-
+//        let groups = Dictionary(grouping: self.Model_data_Array) { (Model_data_Array) -> Date  in
+//
+//            return firstDayOfMonth(date: Model_data_Array.expenses_Date!)
+//
+//        }
+    
+//        self.sections  = groups.map(MonthSection.init(month:headlines:)).sorted()
         
         
         Button_action.addItem(title: "เพิ่มรายรับ", icon: UIImage(systemName: "dollarsign.circle" )){
@@ -190,25 +197,29 @@ class ViewController: UIViewController  {
 
 extension ViewController : UITableViewDelegate  , UITableViewDataSource {
 
-    
-    
-         func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+            func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
 //            let dataIn_ExsKey = TodateSectionTitles[section]
 //            if let dataIn_ExsValue = Model_data_Array[dataIn_ExsKey] {
 //                return dataIn_ExsValue.count
 //            }
-             return Model_data_Array.count
+             
+//             let section = self.sections[section]
+////                print(sections)
+//             return section.headlines.count
+             
+//
+                return Model_data_Array.count
              
         }
         func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
                 let cell = tableView.dequeueReusableCell(withIdentifier: "DefaultCell", for: indexPath) as! MyTableViewCell
                     cell.selectionStyle = .none
-                    cell.number_label?.text = String(Model_data_Array[indexPath.row].expenses_Salary)
+                    numberFormatter.numberStyle = .decimal
+                    let formattedNumber = numberFormatter.string(from:NSNumber(value: Model_data_Array[indexPath.row].expenses_Salary))
+                    cell.number_label?.text = formattedNumber
                     cell.type_header_label?.text = Model_data_Array[indexPath.row].expenses_Type
                     cell.type_text_sta?.text = Model_data_Array[indexPath.row].expenses_text_hidden
-            cell.time_label?.text  =  dateFormatter.string(from: Model_data_Array[indexPath.row].expenses_Date ??  date )
-            
-            
+                    cell.time_label?.text  =  dateFormatter.string(from: Model_data_Array[indexPath.row].expenses_Date ??  date )
                             if(cell.type_text_sta?.text == "รายจ่าย"){
                                 cell.number_label?.textColor = UIColor(red: 1.00, green: 0.26, blue: 0.26, alpha: 1.00)
                             }else{
@@ -217,10 +228,6 @@ extension ViewController : UITableViewDelegate  , UITableViewDataSource {
 //                  cell.time_label?.text = Model_data_Array[indexPath.row].expenses_Description
 //                    cell.time_label?.text =  (Model_data_Array[indexPath.row].expenses_Date)
 //                    cell.time_label?.text =  Date(Model_data_Array[indexPath.row].expenses_Date ?? Date() )
-         
-        
-//                    cell.type_text_sta?.text = "จ่าย / รับ "
-//                    cell.time_label?.text = "เวลา"
                     cell.layer.cornerRadius  =  15
                     cell.layer.shadowColor = UIColor.gray.cgColor
                     cell.layer.shadowRadius = 3.0
@@ -230,10 +237,10 @@ extension ViewController : UITableViewDelegate  , UITableViewDataSource {
                         return cell
             }
     
-     func numberOfSections(in tableView: UITableView) -> Int {
-           
-         return Model_data_Array.count
-       }
+//     func numberOfSections(in tableView: UITableView) -> Int {
+//
+//         return Model_data_Array.count
+//       }
 
    
     
@@ -279,8 +286,8 @@ extension ViewController : UITableViewDelegate  , UITableViewDataSource {
        
     
          func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-             let section = self.Model_data_Array[section]
-               let date = section.expenses_Date!
+//             let section = self.sections[section]
+//               let date = section.month
                let dateFormatter = DateFormatter()
                dateFormatter.dateFormat = "MMMM yyyy"
                return dateFormatter.string(from: date)

@@ -13,11 +13,15 @@ import RealmSwift
 class AddExViewController: UIViewController  , UITextFieldDelegate  , UIPickerViewDelegate  , UIPickerViewDataSource  {
 
     
-
     var Model_data_Array = [Model_data]()
-    var data_type_income: [String] = []
-    
 //    var data_type_income = [Model_Setting]()
+    var data_type_income: [Model_Setting] = []
+    
+//    var TypemodelSeting = [String]()
+//    var TypedatamodelSeting = [String]()
+//    let myWorkout = Model_Setting()
+//    var myWorkouts:[Model_Setting] = []
+   
     var text_fixld_type_income: UITextField?
     var Button_Save_Data: UIButton?
     var text_fixld_date: UITextField?{
@@ -37,7 +41,12 @@ class AddExViewController: UIViewController  , UITextFieldDelegate  , UIPickerVi
     var callbackSuccess: (() -> ())?
     override func viewDidLoad() {
         super.viewDidLoad()
-        data_type_income = ["ค่าคอนโด", "ค่าข้าว" , "ของใช้ส่วนตัว" , "ค่าผ่อนรถ", "เที่ยวประจำเดือน" ]
+        
+       
+        
+        data_type_income =  DatabaseHelper.shared.getAllInTyper()
+       
+       
             view.backgroundColor = UIColor(red: 1.00, green: 0.26, blue: 0.26, alpha: 1.00)
             let label = UILabel(frame: CGRect(x: 0 ,
                                               y: 0.05 * self.view.frame.size.width,
@@ -102,7 +111,7 @@ class AddExViewController: UIViewController  , UITextFieldDelegate  , UIPickerVi
             text_fixld_date?.borderStyle = .roundedRect
             text_fixld_date?.inputView = datePicker
             datePicker.datePickerMode = .date
-            datePicker.preferredDatePickerStyle = .wheels
+//            datePicker.preferredDatePickerStyle = .wheels
             datePicker.timeZone = NSTimeZone.local
             datePicker.maximumDate = Date()
             self.view.addSubview(text_fixld_date!)
@@ -128,12 +137,12 @@ class AddExViewController: UIViewController  , UITextFieldDelegate  , UIPickerVi
         self.view.addSubview(Button_Save_Data!)
 
         
+
     }
     
 
     @IBAction func buttonTapped(_ sender: UIButton) {
        
-        print(text_fixld_date!)
         
         if(text_fixld_type_income?.text != "" &&  text_fixld_detail?.text != "" &&  text_fixld_date?.text != "" ){
         
@@ -209,10 +218,10 @@ class AddExViewController: UIViewController  , UITextFieldDelegate  , UIPickerVi
     }
     
     
-    func save(completion: (_ finished: Bool ) -> ()){
-        
-        
-    }
+//    func save(completion: (_ finished: Bool ) -> ()){
+//        
+//        
+//    }
     
     @objc func dateChange(datePicker: UIDatePicker)
         {
@@ -234,62 +243,24 @@ class AddExViewController: UIViewController  , UITextFieldDelegate  , UIPickerVi
         return true
         
     }
-//    @objc func textFieldDidChange(_ textField: UITextField) {
-//        return
-//    }
-
-    
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
-    
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        data_type_income.count
+        return data_type_income.count
     }
-    
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        data_type_income[row]
-   
-            
-       }
-
-    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-      
-        text_fixld_type_income!.text = data_type_income[row]
-        
-
+        return data_type_income[row].setting_type_in_ex
     }
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        text_fixld_type_income!.text = data_type_income[row].setting_type_in_ex
+     }
    
 }
-
-//
-//extension ViewController :   UIPickerViewDelegate , UIPickerViewDataSource {
-//
-//
-//    func numberOfComponents(in pickerView: UIPickerView) -> Int {
-//        1
-//    }
-//
-//    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-//           data_type_income.count
-//
-//
-//    }
-//
-//    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-//         data_type_income[row]
-//    }
-//
-//}
-
 extension UITextField  {
-    
-   
     func AddDone_CancelToolbar(onDone: (target: Any , action: Selector)? = nil , onCancel: (target: Any , action: Selector)? = nil ){
-        
         let onCancel = onCancel ?? (target: self, action: #selector(cancelButtonTapped))
         let onDone = onDone ?? (target: self, action: #selector(doneButtonTapped))
-        
         let toolbar : UIToolbar = UIToolbar()
         toolbar.barStyle = .default
         toolbar.items = [
@@ -299,15 +270,10 @@ extension UITextField  {
         ]
         toolbar.sizeToFit()
         self.inputAccessoryView = toolbar
-        
     }
-    
     @objc func cancelButtonTapped() {
         self.resignFirstResponder()
-        
-                                  
     }
-    
     @objc func doneButtonTapped() { self.resignFirstResponder()}
     
 }

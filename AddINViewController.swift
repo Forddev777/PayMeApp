@@ -11,7 +11,8 @@ class AddINViewController: UIViewController , UITextFieldDelegate , UIPickerView
   
     
     var Model_data_Array = [Model_data]()
-    var data_type_income: [String] = []
+//    var data_type_income: [String] = []
+    var data_type_income: [Model_Setting] = []
     var text_fixld_type_income: UITextField?
     var Button_Save_Data: UIButton?
     var text_fixld_date: UITextField?{
@@ -28,7 +29,7 @@ class AddINViewController: UIViewController , UITextFieldDelegate , UIPickerView
     var text_Income = "รายรับ"
     var callbackSuccess: (() -> ())?
     override func viewDidLoad() {
-        data_type_income = ["เงินเดือน", "โบนัส" , "ขายของออนไลน์" , "ปันผลหุ้น", "กองทุน"  , "แผงตลาด" ,  "ขายมะพร้าวประจำเดือน" ]
+        data_type_income = DatabaseHelper.shared.getAllInTyper()
         super.viewDidLoad()
         view.backgroundColor = UIColor(red: 0.31, green: 0.76, blue: 0.59, alpha: 1.00)
         let label = UILabel(frame: CGRect(x: 0 ,
@@ -169,16 +170,13 @@ class AddINViewController: UIViewController , UITextFieldDelegate , UIPickerView
     }
     
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        data_type_income.count
+         return data_type_income.count
     }
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        data_type_income[row]
+        return data_type_income[row].setting_type_in_ex
        }
-    
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        text_fixld_type_income!.text = data_type_income[row]
-        
-
+        return text_fixld_type_income!.text = data_type_income[row].setting_type_in_ex
     }
     
 }

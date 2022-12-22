@@ -9,12 +9,11 @@
 
 import Foundation
 import RealmSwift
-
 class DatabaseHelper{
     
         static let shared = DatabaseHelper()
         private var realm = try! Realm()
-            
+   
     
     func  getDatabasePath() -> URL?{
             
@@ -56,5 +55,25 @@ class DatabaseHelper{
     func getAllContacts() -> [Model_data] {
         return Array(realm.objects(Model_data.self))
     }
+    
+    
+    func getAllExTyper() -> [Model_Setting] {
+//        let adults = realm.objects(Model_Setting.self).where {
+//            $0.setting_type == "รายจ่าย"
+//        }
+//        print(adults)
+        
+        return Array(realm.objects(Model_Setting.self).where {
+                $0.setting_type == "รายจ่าย"})
+        
+     
+    
+    }
+    func getAllInTyper() -> [Model_Setting] {
+        return Array(realm.objects(Model_Setting.self).where{
+            $0.setting_type == "รายรับ"
+        })
+    }
+
 
 }
