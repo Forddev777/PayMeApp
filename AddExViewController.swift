@@ -44,7 +44,7 @@ class AddExViewController: UIViewController  , UITextFieldDelegate  , UIPickerVi
         
        
         
-        data_type_income =  DatabaseHelper.shared.getAllInTyper()
+        data_type_income =  DatabaseHelper.shared.getAllExTyper()
        
        
             view.backgroundColor = UIColor(red: 1.00, green: 0.26, blue: 0.26, alpha: 1.00)

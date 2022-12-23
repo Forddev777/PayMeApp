@@ -13,23 +13,18 @@ class DatabaseHelper{
     
         static let shared = DatabaseHelper()
         private var realm = try! Realm()
-   
-    
+
     func  getDatabasePath() -> URL?{
-            
         return Realm.Configuration.defaultConfiguration.fileURL
     }
     
     func saveContact(contact: Model_data ){
-        
         try! realm.write({
-            
             realm.add(contact)
             
         })
     }
-    
-    
+
     func saveSetting(contact: Model_Setting ){
         try! realm.write({
             realm.add(contact)
@@ -48,32 +43,20 @@ class DatabaseHelper{
     
     func deleteContact(contact: Model_data ){
         try! realm.write{
-            realm.delete(contact)
-        }
+            realm.delete(contact)}
     }
-
     func getAllContacts() -> [Model_data] {
         return Array(realm.objects(Model_data.self))
     }
     
-    
     func getAllExTyper() -> [Model_Setting] {
-//        let adults = realm.objects(Model_Setting.self).where {
-//            $0.setting_type == "รายจ่าย"
-//        }
-//        print(adults)
-        
         return Array(realm.objects(Model_Setting.self).where {
                 $0.setting_type == "รายจ่าย"})
-        
-     
-    
     }
+    
     func getAllInTyper() -> [Model_Setting] {
         return Array(realm.objects(Model_Setting.self).where{
-            $0.setting_type == "รายรับ"
-        })
+            $0.setting_type == "รายรับ"})
     }
-
 
 }

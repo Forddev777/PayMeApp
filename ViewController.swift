@@ -102,12 +102,17 @@ class ViewController: UIViewController  {
             item in
             self.present(self.SetingView(forType: "Seting") , animated: true, completion: nil)
         }
+        
+        TableView.refreshControl = UIRefreshControl()
+        TableView.refreshControl?.addTarget(self, action: #selector(configuration), for: .valueChanged)
+        
     }
-    
-    func configuration(){
+    @objc  func configuration(){
         TableView.delegate = self
         TableView.dataSource = self
         Model_data_Array = DatabaseHelper.shared.getAllContacts()
+        self.TableView.reloadData()
+        self.TableView.refreshControl?.endRefreshing()
         TableView.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
         
     }
@@ -118,6 +123,7 @@ class ViewController: UIViewController  {
             vc.callbackSuccess = {
                      self.Model_data_Array = DatabaseHelper.shared.getAllContacts()
                      self.TableView.reloadData()
+                print("debugCallback")
             }
             vc.modalPresentationStyle = .pageSheet
             navigationController?.pushViewController(vc, animated: true)
@@ -184,10 +190,11 @@ class ViewController: UIViewController  {
 
     }
     
+    
     override func viewWillAppear(_ animated: Bool){
-       
+
         self.TableView.reloadData()
-        
+
     }
     
    
@@ -219,7 +226,10 @@ extension ViewController : UITableViewDelegate  , UITableViewDataSource {
                     cell.number_label?.text = formattedNumber
                     cell.type_header_label?.text = Model_data_Array[indexPath.row].expenses_Type
                     cell.type_text_sta?.text = Model_data_Array[indexPath.row].expenses_text_hidden
-                    cell.time_label?.text  =  dateFormatter.string(from: Model_data_Array[indexPath.row].expenses_Date ??  date )
+                    cell.time_label?.text  =  dateFormatter.string(from: Model_data_Array[indexPath.row].expenses_Date!)
+                   print(dateFormatter.string(from: Model_data_Array[indexPath.row].expenses_Date!))
+            
+            
                             if(cell.type_text_sta?.text == "รายจ่าย"){
                                 cell.number_label?.textColor = UIColor(red: 1.00, green: 0.26, blue: 0.26, alpha: 1.00)
                             }else{

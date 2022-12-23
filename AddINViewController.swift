@@ -93,7 +93,11 @@ class AddINViewController: UIViewController , UITextFieldDelegate , UIPickerView
         text_fixld_date?.borderStyle = .roundedRect
         text_fixld_date?.inputView = datePicker
         datePicker.datePickerMode = .date
-        datePicker.preferredDatePickerStyle = .wheels
+//        if #available(iOS 13.4, *) {
+//            datePicker.preferredDatePickerStyle = .wheels
+//        } else {
+//            datePicker.preferredDatePickerStyle = .automatic
+//        }
         datePicker.maximumDate = Date()
         text_fixld_date?.delegate = self
         self.view.addSubview(text_fixld_date!)
@@ -126,16 +130,12 @@ class AddINViewController: UIViewController , UITextFieldDelegate , UIPickerView
             let v_Income_Type = text_fixld_type_income?.text!
             let v_Income_Description = text_fixld_detail?.text!
             let v_Income_text_heidden = text_Income
-           
-         
-
     
             let model = Model_data(expenses_Salary: v_Income_number,
                                    expenses_Type: v_Income_Type,
                                    expenses_Description: v_Income_Description,
                                    expenses_text_hidden: v_Income_text_heidden,
                                    expenses_Date: date
-                                   
                                     )
             self.Model_data_Array.append(model)
             DatabaseHelper.shared.saveContact(contact: model)
@@ -173,10 +173,10 @@ class AddINViewController: UIViewController , UITextFieldDelegate , UIPickerView
          return data_type_income.count
     }
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return data_type_income[row].setting_type_in_ex
+        return data_type_income[row].setting_type_in_ex!
        }
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        return text_fixld_type_income!.text = data_type_income[row].setting_type_in_ex
+        return text_fixld_type_income!.text = data_type_income[row].setting_type_in_ex!
     }
     
 }
