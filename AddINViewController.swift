@@ -27,6 +27,7 @@ class AddINViewController: UIViewController , UITextFieldDelegate , UIPickerView
     var viewPicker =  UIPickerView()
     var datePicker = UIDatePicker()
     var text_Income = "รายรับ"
+    let dateFormatter = DateFormatter()
     var callbackSuccess: (() -> ())?
     override func viewDidLoad() {
         data_type_income = DatabaseHelper.shared.getAllInTyper()
@@ -93,11 +94,6 @@ class AddINViewController: UIViewController , UITextFieldDelegate , UIPickerView
         text_fixld_date?.borderStyle = .roundedRect
         text_fixld_date?.inputView = datePicker
         datePicker.datePickerMode = .date
-//        if #available(iOS 13.4, *) {
-//            datePicker.preferredDatePickerStyle = .wheels
-//        } else {
-//            datePicker.preferredDatePickerStyle = .automatic
-//        }
         datePicker.maximumDate = Date()
         text_fixld_date?.delegate = self
         self.view.addSubview(text_fixld_date!)
@@ -114,29 +110,23 @@ class AddINViewController: UIViewController , UITextFieldDelegate , UIPickerView
     }
     
    
-    
     @IBAction func buttonTapped(_ sender: UIButton) {
         
         if(text_fixld_number?.text != "" &&  text_fixld_type_income?.text != "" &&  text_fixld_detail?.text != "" && text_fixld_date?.text != "" ){
-            
-            
-         
-//            let isoDate = text_fixld_date?.text!
-//            let dateFormatter = DateFormatter()
-//              dateFormatter.locale = Locale(identifier: "th") // set locale to reliable US_POSIX
-//              dateFormatter.dateFormat = "dd MMMM yyyy"
-//            dateFormatter.timeZone = TimeZone(secondsFromGMT: +7)
-//            let date = dateFormatter.date(from:isoDate!)
+            let isoDate = text_fixld_date?.text!
+              dateFormatter.locale = Locale(identifier: "th_TH") // set locale to reliable US_POSIX
+              dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
+              let Newdate = dateFormatter.date(from:isoDate!)
             let v_Income_number = Int(text_fixld_number?.text! ?? "" ) ?? 0
             let v_Income_Type = text_fixld_type_income?.text!
             let v_Income_Description = text_fixld_detail?.text!
-            let v_Income_text_heidden = text_Income
+            let v_Income_text_heidden = text_Income.self
+            let v_Income_Date  = Newdate
             let model = Model_data(expenses_Salary: v_Income_number,
                                    expenses_Type: v_Income_Type,
                                    expenses_Description: v_Income_Description,
                                    expenses_text_hidden: v_Income_text_heidden,
-                                   expenses_Date: Date()
-                                    )
+                                   expenses_Date: v_Income_Date)
             self.Model_data_Array.append(model)
             DatabaseHelper.shared.saveContact(contact: model)
             self.callbackSuccess?()
@@ -159,11 +149,10 @@ class AddINViewController: UIViewController , UITextFieldDelegate , UIPickerView
         func formatDate(date: Date) -> String
         {
             let formatter = DateFormatter()
-            formatter.dateFormat = "dd MMMM yyyy"
-            formatter.locale = Locale(identifier: "th")
+                formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
+                formatter.locale = Locale(identifier: "th_TH")
             return formatter.string(from: date)
         }
-    
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
