@@ -121,21 +121,21 @@ class AddINViewController: UIViewController , UITextFieldDelegate , UIPickerView
             
             
          
-            let isoDate = text_fixld_date?.text!
-            let dateFormatter = DateFormatter()
-              dateFormatter.locale = Locale(identifier: "th") // set locale to reliable US_POSIX
-              dateFormatter.dateFormat = "dd MMMM yyyy"
-            let date = dateFormatter.date(from:isoDate ?? "")
+//            let isoDate = text_fixld_date?.text!
+//            let dateFormatter = DateFormatter()
+//              dateFormatter.locale = Locale(identifier: "th") // set locale to reliable US_POSIX
+//              dateFormatter.dateFormat = "dd MMMM yyyy"
+//            dateFormatter.timeZone = TimeZone(secondsFromGMT: +7)
+//            let date = dateFormatter.date(from:isoDate!)
             let v_Income_number = Int(text_fixld_number?.text! ?? "" ) ?? 0
             let v_Income_Type = text_fixld_type_income?.text!
             let v_Income_Description = text_fixld_detail?.text!
             let v_Income_text_heidden = text_Income
-    
             let model = Model_data(expenses_Salary: v_Income_number,
                                    expenses_Type: v_Income_Type,
                                    expenses_Description: v_Income_Description,
                                    expenses_text_hidden: v_Income_text_heidden,
-                                   expenses_Date: date
+                                   expenses_Date: Date()
                                     )
             self.Model_data_Array.append(model)
             DatabaseHelper.shared.saveContact(contact: model)

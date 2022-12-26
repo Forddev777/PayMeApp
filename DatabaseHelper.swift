@@ -32,14 +32,14 @@ class DatabaseHelper{
         })
     }
     
-    func updateContact(oldContact: Model_data, newContact: Model_data )
-     {
-         try! realm.write{
-//             oldContact.expenses_Salary = newContact.first
-//             oldContact.lastname = newContact.lastname
-         }
-        
-    }
+//    func updateContact(oldContact: Model_data, newContact: Model_data )
+//     {
+//         try! realm.write{
+//         oldContact.expenses_Salary = newContact.first
+///         oldContact.lastname = newContact.lastname
+//         }
+//
+//    }
     
     func deleteContact(contact: Model_data ){
         try! realm.write{
