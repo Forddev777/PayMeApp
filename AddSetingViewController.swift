@@ -7,16 +7,15 @@
 
 import UIKit
 
-class AddSetingViewController: UIViewController , UITextFieldDelegate , UIPickerViewDelegate , UIPickerViewDataSource   {
+class AddSetingViewController: UIViewController , UITextFieldDelegate , UIPickerViewDelegate , UIPickerViewDataSource    {
    
     var Model_data_Array = [Model_Setting]()
     var text_fixld_type: UITextField?
     var data_type: [String] = []
     var Button_Save_Data: UIButton?
     var viewPicker =  UIPickerView()
-//    var text_fixld_type_in_ex: UITextField?{
-//        didSet { text_fixld_type_in_ex?.AddDone_CancelToolbar()}
-//    }
+   
+    
     var text_fixld_detail: UITextField?{
         didSet { text_fixld_detail?.AddDone_CancelToolbar()}
     }
@@ -24,6 +23,10 @@ class AddSetingViewController: UIViewController , UITextFieldDelegate , UIPicker
         data_type = ["รายรับ", "รายจ่าย"]
         super.viewDidLoad()
         view.backgroundColor = .darkGray
+        
+        
+
+        
         
         let label = UILabel(frame: CGRect(x: 0 ,
                                           y: 0.05 * self.view.frame.size.width,
@@ -35,7 +38,9 @@ class AddSetingViewController: UIViewController , UITextFieldDelegate , UIPicker
         label.font = UIFont(name: "Halvetica", size: 25)
         self.view.addSubview(label)
         
-
+     
+        
+        
         text_fixld_type = UITextField.init(frame:(CGRect(x: 15,
                                                                 y: self.view.frame.size.height * 0.1,
                                                                 width: self.view.frame.size.width * 0.90 ,
@@ -88,7 +93,6 @@ class AddSetingViewController: UIViewController , UITextFieldDelegate , UIPicker
             DatabaseHelper.shared.saveSetting(contact: model_seting)
             self.dismiss(animated: true, completion: nil)
             
-            
         }else{
             let alert = UIAlertController(title: "ระบุค่าไม่ครบ", message: "ลองใหม่อีกครั้ง", preferredStyle: UIAlertController.Style.alert)
             alert.addAction(UIAlertAction(title: "ตกลง", style: UIAlertAction.Style.default , handler: nil))
@@ -98,9 +102,7 @@ class AddSetingViewController: UIViewController , UITextFieldDelegate , UIPicker
         
     
     }
-    
-    
-    
+                                    
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return  1
     }

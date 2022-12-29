@@ -13,7 +13,7 @@ class DatabaseHelper{
     
         static let shared = DatabaseHelper()
         private var realm = try! Realm()
-
+            
     func  getDatabasePath() -> URL?{
         return Realm.Configuration.defaultConfiguration.fileURL
     }
@@ -24,11 +24,10 @@ class DatabaseHelper{
             
         })
     }
-
     func saveSetting(contact: Model_Setting ){
         try! realm.write({
             realm.add(contact)
-            
+        
         })
     }
     
@@ -40,15 +39,19 @@ class DatabaseHelper{
 //         }
 //
 //    }
-    
+
+//    2022-12-28T06:43:40.000Z
+//        .filter("expenses_Date == %@", )
     func deleteContact(contact: Model_data ){
         try! realm.write{
             realm.delete(contact)}
     }
+
     func getAllContacts() -> [Model_data] {
-        return Array(realm.objects(Model_data.self))
+        return Array(realm.objects(Model_data.self).sorted(byKeyPath: "expenses_Date", ascending: false ))
     }
-    
+
+   
     func getAllExTyper() -> [Model_Setting] {
         return Array(realm.objects(Model_Setting.self).where {
                 $0.setting_type == "รายจ่าย"})
