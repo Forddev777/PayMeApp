@@ -8,8 +8,9 @@
 import UIKit
 import StickyButton
 import RealmSwift
-class ViewController: UIViewController  {
-
+import Charts
+class ViewController: UIViewController , ChartViewDelegate   {
+//    weak var axisFormatDelegate: IAxisValueFormatter?
     var Model_data_Array = [Model_data]()
     @IBOutlet weak var Label_ToDate: UILabel!
     let date = Date()
@@ -26,16 +27,32 @@ class ViewController: UIViewController  {
     var dataIn_Exs: [String] = []
     var date_section: String = ""
    @IBOutlet weak var Button_action: StickyButton!
-//    var barChart = BarChartView()
-    
+    var PieChart = PieChartView()
+    @IBOutlet weak var SumIncomeLabel: UILabel!
+    @IBOutlet weak var SumExpenLabel: UILabel!
     let realm = try! Realm()
     var items: Results<Model_data>?
     var groupedItems = [Date:Results<Model_data>]()
     var itemDates = [Date]()
+    var months: [String]!
+    var callback: ((String?)->())?
+    var SectionDay:  String = " TEST"
+  
+    
     
     override func viewDidLoad() {
+//        axisFormatDelegate = self
+      
         configuration()
         super.viewDidLoad()
+       
+        
+        months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+        let unitsSold = [20.0, 4.0, 6.0, 3.0, 12.0, 16.0, 4.0, 18.0, 2.0, 4.0, 5.0, 4.0]
+        setChart(dataPoints: months, values: unitsSold)
+        
+        PieChart.delegate = self
+        
         TableView.register(UINib.init(nibName: MyCellId  , bundle: nil), forCellReuseIdentifier: "DefaultCell")
         TableView.rowHeight = UITableView.automaticDimension
         TableView.separatorColor = UIColor.clear
@@ -66,20 +83,16 @@ class ViewController: UIViewController  {
             item in
             self.present(self.SetingView(forType: "Seting") , animated: true, completion: nil)
         }
+        Button_action.addItem(title: "ตั้งค่าnew", icon: UIImage(systemName: "gearshape")){
+            item in
+            self.present(self.SettingNewViewController(forType: "SettingNew"), animated: true, completion: nil)
+        }
+        
         // pull to refesh in ios swift //
 //        TableView.refreshControl = UIRefreshControl()
 //        TableView.refreshControl?.addTarget(self, action: #selector(configuration), for: .valueChanged)
         
-     
-//        let vc = AddINViewController()
-//            vc.callbackSuccess = {
-//
-//                     self.TableView.reloadData()
-//            }
-      
        
-                  
-        
     }
     
     func SortDay(){
@@ -105,6 +118,29 @@ class ViewController: UIViewController  {
                         })
         }
     
+    func SumLabel() {
+        
+        let getdataIncome =  DatabaseHelper.shared.getAllContacts()
+        let getdataExpen = DatabaseHelper.shared.getAllContacts()
+        var SumIncome:Int = 0
+        var SumExpense:Int = 0
+        for ForResultIncome in getdataIncome where ForResultIncome.expenses_text_hidden  != "รายจ่าย"{
+            SumIncome += ForResultIncome.expenses_Salary
+        }
+        for  ForResultExpense  in getdataExpen where ForResultExpense.expenses_text_hidden != "รายรับ" {
+            SumExpense += ForResultExpense.expenses_Salary
+        }
+        SumIncomeLabel.text! = String(SumIncome)
+        SumExpenLabel.text! = String(SumExpense)
+
+        
+        //ค่าใช้จ่ายทั้งหมด
+        
+        //ค่าใช้จ่าย
+        // enum [ธันวา , พฤศจิกา , ตุลา  , กันยา  , สิงหา  , กรกฏา  , มิถุนายน , พฤษภาคม , เมษายน , มีนาคม , กุมภาพัน ,มกราคม ]
+        
+    }
+    
     
     @objc  func configuration(){
         TableView.delegate = self
@@ -114,6 +150,7 @@ class ViewController: UIViewController  {
 //        self.TableView.refreshControl?.endRefreshing()
         self.SortDay()
         TableView.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
+        
     }
 
     private func AddINView(forType type: String) -> UIViewController {
@@ -121,6 +158,7 @@ class ViewController: UIViewController  {
             vc.callbackSuccess = {
                      self.Model_data_Array = DatabaseHelper.shared.getAllContacts()
                 self.SortDay()
+                self.SumLabel()
                      self.TableView.reloadData()
             }
             vc.modalPresentationStyle = .pageSheet
@@ -132,6 +170,7 @@ class ViewController: UIViewController  {
             vcEX.callbackSuccess = {
                 self.Model_data_Array = DatabaseHelper.shared.getAllContacts()
                 self.SortDay()
+                self.SumLabel()
                 self.TableView.reloadData()
             }
             vcEX.modalPresentationStyle = .pageSheet
@@ -143,6 +182,14 @@ class ViewController: UIViewController  {
         vcseting.modalPresentationStyle = .pageSheet
         navigationController?.pushViewController(vcseting , animated: true)
         return vcseting
+    }
+    
+    private func SettingNewViewController(forType type: String ) -> UIViewController {
+        let SetingNewViewController = SettingViewController()
+        SetingNewViewController.modalPresentationStyle = .pageSheet
+        navigationController?.pushViewController(SetingNewViewController, animated: true)
+        return SetingNewViewController
+        
     }
 //
 //    private func AddExView(){
@@ -157,7 +204,36 @@ class ViewController: UIViewController  {
 //
 //
 //    }
+
+    func setChart(dataPoints: [String], values: [Double]) {
+        let PieChart = PieChartView(frame: CGRect(x: 14, y: 100, width: View_Grahp.frame.size.width  , height: View_Grahp.frame.size.height  ))
+             var dataEntries: [ChartDataEntry] = []
+             for i in 0..<dataPoints.count {
+//                 let dataEntry = ChartDataEntry(x: values[i], y: Double(i))
+                 let dataEntry = ChartDataEntry(x: values[i], y: Double(i))
+                 dataEntries.append(dataEntry)
+             }
+            let pieChartDataSet = PieChartDataSet(entries: dataEntries, label: "Units Sold")
+                pieChartDataSet.colors = ChartColorTemplates.material()
+        
+            let pieChartData =  PieChartData(dataSet: pieChartDataSet)
+                PieChart.data = pieChartData
+                View_Grahp.addSubview(PieChart)
+                PieChart.center = View_Grahp.center
+    }
+    
+//    var dataEntries: [BarChartDataEntry] = []
+            
+//    for i in 0..<dataPoints.count {
+//        let dataEntry = BarChartDataEntry(value: values[i], xIndex: i)
+//        dataEntries.append(dataEntry)
+//    }
 //
+//    let chartDataSet = BarChartDataSet(yVals: dataEntries, label: "Units Sold")
+//    let chartData = BarChartData(xVals: months, dataSet: chartDataSet)
+//    barChartView.data = chartData
+
+
 //    override func viewDidLayoutSubviews() {
 //        super.viewDidLayoutSubviews()
 //        barChart.frame  = CGRect(x: 0 ,
@@ -167,9 +243,9 @@ class ViewController: UIViewController  {
 //
 //
 //        View_Grahp.addSubview(barChart)
-//
+
 //        var entries = [BarChartDataEntry]()
-//
+
 //        for x in 0..<5 {
 //            entries.append(BarChartDataEntry(x: Double(x),
 //                                             y: Double(x)))
@@ -181,12 +257,25 @@ class ViewController: UIViewController  {
 //       // FE4343
 //        let data = BarChartData(dataSet: set)
 //        barChart.data = data
+//        let visitorCounts = getVisitorCountsFromDatabase()
+//          for i in 0..<visitorCounts.count {
+//            let timeIntervalForDate: TimeInterval = visitorCounts[i].date.timeIntervalSince1970
+//            let dataEntry = BarChartDataEntry(x: Double(timeIntervalForDate), y: Double(visitorCounts[i].count))
+//            dataEntries.append(dataEntry)
+//          }
+//          let chartDataSet = BarChartDataSet(values: dataEntries, label: "Visitor count")
+//          let chartData = BarChartData(dataSet: chartDataSet)
+//          barView.data = chartData
 //
-//    }
+//          let xaxis = barView.xAxis
+//          xaxis.valueFormatter = axisFormatDelegate
+
+   // }
     
-    override func viewWillAppear(_ animated: Bool){
-        self.TableView.reloadData()
-    }
+            override func viewWillAppear(_ animated: Bool){
+                self.TableView.reloadData()
+                SumLabel()
+            }
     
 }
 
@@ -195,6 +284,7 @@ class ViewController: UIViewController  {
 
 
 extension ViewController : UITableViewDelegate  , UITableViewDataSource {
+    
     func numberOfSections(in tableView: UITableView) -> Int {
 //        return Model_data_Array.count
         return   itemDates.count
@@ -217,7 +307,8 @@ extension ViewController : UITableViewDelegate  , UITableViewDataSource {
 //                    cell.time_label?.text = dateFormatter.string(from: Model_data_Array[indexPath.row].expenses_Date!)
        
                 let itemsForDate = groupedItems[itemDates[indexPath.section]]!
-                cell.time_label?.text =  dateFormatter.string(from:  Array(itemsForDate.sorted(byKeyPath: "expenses_Date"))[indexPath.row].expenses_Date!)
+                  SectionDay = dateFormatter.string(from:  Array(itemsForDate.sorted(byKeyPath: "expenses_Date"))[indexPath.row].expenses_Date!)
+                cell.time_label?.text =  SectionDay.self
                 cell.type_header_label?.text = Array(itemsForDate.sorted(byKeyPath: "expenses_Date"))[indexPath.row].expenses_Type
                 let formattedNumber = numberFormatter.string(from:NSNumber(value: Array(itemsForDate.sorted(byKeyPath: "expenses_Date"))[indexPath.row].expenses_Salary))
                 cell.number_label?.text = formattedNumber
@@ -233,6 +324,7 @@ extension ViewController : UITableViewDelegate  , UITableViewDataSource {
                     cell.layer.shadowOpacity = 2.0
                     cell.layer.shadowOffset = CGSize(width: 2, height: 4)
                     cell.layer.masksToBounds = false
+               
                         return cell
             }
 
@@ -291,20 +383,17 @@ extension ViewController : UITableViewDelegate  , UITableViewDataSource {
 //       }
        
          func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-//
-             //let itemsForDate = groupedItems[itemDates[indexPath.section]]!
-                    let sectionDay = "Section"
-//               let date = section.month
-//               let dateFormatter = DateFormatter()
-//               dateFormatter.dateFormat = "MMMM yyyy"
-//               return dateFormatter.string(from: date)
-             return "Section \(sectionDay)"
              
-        }
+             
     
-//        func sectionIndexTitles(for tableView: UITableView) -> [String]? {
-//           return TodateSectionTitles
-//       }
+             let itemsForDate = SectionDay.self
+           
+          
+             return "\(itemsForDate)"
+        }
+  
+  
+       
 
 }
 

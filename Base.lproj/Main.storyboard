@@ -2,6 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19455" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19454"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -58,14 +59,24 @@
                                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="h8b-nC-r6z">
+                                                <rect key="frame" x="8" y="35" width="134" height="21"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
                                         </subviews>
                                         <color key="backgroundColor" red="0.30196078431372547" green="0.75294117647058822" blue="0.58039215686274503" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="64" id="0gU-5B-ccg"/>
                                             <constraint firstItem="c18-EU-Bls" firstAttribute="top" secondItem="GtK-bD-rWO" secondAttribute="top" constant="8" id="2Va-XB-9pl"/>
                                             <constraint firstItem="c18-EU-Bls" firstAttribute="leading" secondItem="GtK-bD-rWO" secondAttribute="leading" constant="8" id="7pA-Ok-Zug"/>
+                                            <constraint firstAttribute="bottom" secondItem="h8b-nC-r6z" secondAttribute="bottom" constant="8" id="JsE-7h-Pwa"/>
+                                            <constraint firstItem="h8b-nC-r6z" firstAttribute="leading" secondItem="GtK-bD-rWO" secondAttribute="leading" constant="8" id="ZBS-Zm-3S3"/>
                                             <constraint firstAttribute="width" constant="150" id="dpR-8k-SdQ"/>
+                                            <constraint firstItem="h8b-nC-r6z" firstAttribute="top" secondItem="c18-EU-Bls" secondAttribute="bottom" constant="6" id="t0t-TK-quF"/>
                                             <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="c18-EU-Bls" secondAttribute="trailing" constant="20" symbolic="YES" id="twf-XP-Osc"/>
+                                            <constraint firstAttribute="trailing" secondItem="h8b-nC-r6z" secondAttribute="trailing" constant="8" id="uoC-xh-vgF"/>
                                         </constraints>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="b3e-fk-I4r" userLabel="View_Ex">
@@ -80,14 +91,24 @@
                                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="33x-rL-ZQP">
+                                                <rect key="frame" x="8" y="35" width="134" height="21"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
                                         </subviews>
                                         <color key="backgroundColor" red="0.99607843137254903" green="0.2627450980392157" blue="0.2627450980392157" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                         <constraints>
+                                            <constraint firstAttribute="bottom" secondItem="33x-rL-ZQP" secondAttribute="bottom" constant="8" id="1Jk-JL-ZaC"/>
+                                            <constraint firstItem="33x-rL-ZQP" firstAttribute="leading" secondItem="b3e-fk-I4r" secondAttribute="leading" constant="8" id="QwJ-zf-0M4"/>
                                             <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="Rec-gu-dN9" secondAttribute="trailing" constant="20" symbolic="YES" id="SVF-th-sKv"/>
                                             <constraint firstItem="Rec-gu-dN9" firstAttribute="leading" secondItem="b3e-fk-I4r" secondAttribute="leading" constant="8" id="W2w-Uc-u0n"/>
+                                            <constraint firstAttribute="trailing" secondItem="33x-rL-ZQP" secondAttribute="trailing" constant="8" id="aOh-JK-r8F"/>
                                             <constraint firstAttribute="width" constant="150" id="bfO-uQ-u2k"/>
                                             <constraint firstAttribute="height" constant="64" id="qi3-jd-g8H"/>
                                             <constraint firstItem="Rec-gu-dN9" firstAttribute="top" secondItem="b3e-fk-I4r" secondAttribute="top" constant="8" id="rd9-1R-EgO"/>
+                                            <constraint firstItem="33x-rL-ZQP" firstAttribute="top" secondItem="Rec-gu-dN9" secondAttribute="bottom" constant="6" id="tUR-Sb-Sli"/>
                                         </constraints>
                                     </view>
                                 </subviews>
@@ -153,6 +174,8 @@
                         <outlet property="Button_action" destination="HS0-fi-3Jt" id="n8W-G0-mkG"/>
                         <outlet property="Label_Time" destination="YiP-1N-6l2" id="lQr-oX-wJz"/>
                         <outlet property="Label_ToDate" destination="MN0-1F-VWO" id="3gH-de-3If"/>
+                        <outlet property="SumExpenLabel" destination="33x-rL-ZQP" id="Dzv-q8-r70"/>
+                        <outlet property="SumIncomeLabel" destination="h8b-nC-r6z" id="PCz-2E-0QX"/>
                         <outlet property="TableView" destination="gkZ-R2-mHu" id="jUw-46-zD9"/>
                         <outlet property="View_Grahp" destination="Uaa-vz-Z8T" id="bsd-jT-xzj"/>
                     </connections>

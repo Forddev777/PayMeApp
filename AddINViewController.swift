@@ -29,6 +29,7 @@ class AddINViewController: UIViewController , UITextFieldDelegate , UIPickerView
     var text_Income = "รายรับ"
     let dateFormatter = DateFormatter()
     var callbackSuccess: (() -> ())?
+  
     override func viewDidLoad() {
         data_type_income = DatabaseHelper.shared.getAllInTyper()
         super.viewDidLoad()
