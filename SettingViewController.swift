@@ -13,24 +13,22 @@ struct Catagoitems {
     let items: [String]
     
 }
-class SettingViewController: UIViewController{
-    private let mytableView: UITableView = {
-        let table = UITableView()
-        table.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
-        return table
-    }()
+class SettingViewController: UIViewController , UITableViewDelegate , UITableViewDataSource {
+   
     
-    
-    private let data:[Catagoitems] = [
-        Catagoitems(title: "ประเภทรายรับ" , items: ["a" , "b" , "c"]),
-        Catagoitems(title: "ประเภทรายจ่าย" , items: ["x" , "y" , "z"]),
-        Catagoitems(title: "Three" , items: ["g" , "g" , "g"])
-        ]
 
-//    private var myTableView: UITableView!
+    private let myArray: NSArray = ["First","Second","Third"]
+    private var myTableView: UITableView!
+
+   
     override func viewDidLoad() {
-        view.backgroundColor = .blue
+       
+        
+        view.backgroundColor = .gray
         super.viewDidLoad()
+        
+        navigationItem.title = "SettingPage"
+        
         let label = UILabel(frame: CGRect(x: 0 ,
                                           y: 0.05 * self.view.frame.size.width,
                                           width: self.view.frame.size.width ,
@@ -40,40 +38,46 @@ class SettingViewController: UIViewController{
         label.textColor = .white
         label.font = UIFont(name: "Halvetica", size: 25)
         self.view.addSubview(label)
-    
-        self.view.addSubview(mytableView)
-       
-        mytableView.dataSource = self
-        mytableView.delegate = self
         
-    }
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        mytableView.frame = view.bounds
-    }
     
-}
+        let barHeight: CGFloat = UIApplication.shared.statusBarFrame.size.height
+              let displayWidth: CGFloat = self.view.frame.width
+              let displayHeight: CGFloat = self.view.frame.height
 
-extension SettingViewController: UITableViewDelegate {
+        myTableView = UITableView(frame: CGRect(x: 0, y: 50, width: displayWidth, height: displayHeight - barHeight))
+              myTableView.register(UITableViewCell.self, forCellReuseIdentifier: "MyCell")
+              myTableView.dataSource = self
+              myTableView.delegate = self
+              self.view.addSubview(myTableView)
+    }
+   
+    
+  
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        mytableView.deselectRow(at: indexPath, animated: true)
-        let catagory =  data[indexPath.row]
-        let vc =  ListViewController(items: catagory.items)
-        vc.title = catagory.title
-        print(catagory)
-        navigationController?.pushViewController(vc, animated: true)
+          print("Num: \(indexPath.row)")
+          print("Value: \(myArray[indexPath.row])")
+            let PageDetail = DetailViewController()
+            let rootVC  = SettingViewController()
+            let NaVC = UINavigationController(rootViewController: rootVC)
+//            NaVC.modalPresentationStyle = .fullScreen
+//            present(NaVC, animated: true)
+            navigationController?.pushViewController(PageDetail, animated: true)
       }
-}
 
-extension SettingViewController: UITableViewDataSource {
       func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-          return data.count
+          return myArray.count
       }
+
       func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-          let cell = mytableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath as IndexPath)
-          cell.textLabel!.text = data[indexPath.row].title
+          let cell = tableView.dequeueReusableCell(withIdentifier: "MyCell", for: indexPath as IndexPath)
+          cell.textLabel!.text = "\(myArray[indexPath.row])"
           cell.accessoryType = .disclosureIndicator
+         
+         
           return cell
       }
-
+    
+    
+    
+    
 }

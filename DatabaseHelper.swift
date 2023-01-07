@@ -50,6 +50,11 @@ class DatabaseHelper{
     func getAllContacts() -> [Model_data] {
         return Array(realm.objects(Model_data.self).sorted(byKeyPath: "expenses_Date", ascending: false ))
     }
+    
+//    func getAllContactsForDetete() -> [Model_data] {
+//        return Array(realm.objects(Model_data.self).where {
+//            $0.PKeyid == NewPKID.P})
+//    }
 
    
     func getAllExTyper() -> [Model_Setting] {
@@ -57,6 +62,13 @@ class DatabaseHelper{
                 $0.setting_type == "รายจ่าย"})
     }
     
+//
+//    func getAllDetele() -> [Model_data] {
+//        return Array(realm.objects(Model_data.self).where {
+//            $0.PKeyid ==  PKid.self })
+//    }
+    
+   
     func getAllInTyper() -> [Model_Setting] {
         return Array(realm.objects(Model_Setting.self).where{
             $0.setting_type == "รายรับ"})

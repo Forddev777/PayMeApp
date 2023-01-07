@@ -138,11 +138,11 @@ class AddExViewController: UIViewController  , UITextFieldDelegate  , UIPickerVi
             let v_expenses_Description = text_fixld_detail?.text!
             let v_expenses_text_heidden = text_Ex.self
             let v_expenses_Date  = Newdate
-            let contact = Model_data(expenses_Salary: v_expenses_number,
-                                     expenses_Type: v_expenses_Type,
-                                     expenses_Description: v_expenses_Description ,
-                                     expenses_text_hidden: v_expenses_text_heidden,
-                                     expenses_Date: v_expenses_Date)
+            let contact = Model_data(expenses_Salary: v_expenses_number  ,
+                                     expenses_Type: v_expenses_Type ?? "" ,
+                                     expenses_Description: v_expenses_Description  ?? "" ,
+                                     expenses_text_hidden: v_expenses_text_heidden  ,
+                                     expenses_Date: v_expenses_Date ?? Date()  )
             self.Model_data_Array.append(contact) //Append
             DatabaseHelper.shared.saveContact(contact: contact)
             self.callbackSuccess?()

@@ -17,6 +17,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             print("Database URL:", url)
         }
         return true
+        
+      
+        
+        
     }
 
     // MARK: UISceneSession Lifecycle
