@@ -14,21 +14,15 @@ struct Catagoitems {
     
 }
 class SettingViewController: UIViewController , UITableViewDelegate , UITableViewDataSource {
-   
-    
-
-    private let myArray: NSArray = ["First","Second","Third"]
+    private let myArray: NSArray = ["เพิ่มข้อมูลรายรับ","เพิ่มข้อมูลรายจ่าย","แก้ไขประเภทข้อมูล"]
     private var myTableView: UITableView!
-
-   
     override func viewDidLoad() {
        
-        
         view.backgroundColor = .gray
         super.viewDidLoad()
-        
-        navigationItem.title = "SettingPage"
-        
+//        self.navigationController?.navigationBar.barTintColor = .blue
+       
+
         let label = UILabel(frame: CGRect(x: 0 ,
                                           y: 0.05 * self.view.frame.size.width,
                                           width: self.view.frame.size.width ,
@@ -38,7 +32,7 @@ class SettingViewController: UIViewController , UITableViewDelegate , UITableVie
         label.textColor = .white
         label.font = UIFont(name: "Halvetica", size: 25)
         self.view.addSubview(label)
-        
+
     
         let barHeight: CGFloat = UIApplication.shared.statusBarFrame.size.height
               let displayWidth: CGFloat = self.view.frame.width
@@ -56,12 +50,31 @@ class SettingViewController: UIViewController , UITableViewDelegate , UITableVie
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
           print("Num: \(indexPath.row)")
           print("Value: \(myArray[indexPath.row])")
-            let PageDetail = DetailViewController()
-            let rootVC  = SettingViewController()
-            let NaVC = UINavigationController(rootViewController: rootVC)
-//            NaVC.modalPresentationStyle = .fullScreen
-//            present(NaVC, animated: true)
-            navigationController?.pushViewController(PageDetail, animated: true)
+        let liveAlbums = indexPath.row
+
+        switch liveAlbums {
+        case 0:
+            print("รายรับ")
+            let vcpass = SettingIncomedetailViewController()
+            vcpass.modalPresentationStyle = .overFullScreen
+            self.navigationController?.pushViewController( vcpass, animated:   true)
+            
+        case 1:
+            print("รายจ่าย")
+            let vcpass = SettingExpensesdetailViewController()
+            vcpass.modalPresentationStyle = .overFullScreen
+            self.navigationController?.pushViewController( vcpass, animated:   true)
+        case 2:
+            print("TypeList")
+            let vcpass = ListTypeViewController()
+            vcpass.modalPresentationStyle = .overFullScreen
+            self.navigationController?.pushViewController( vcpass, animated:   true)
+         
+        default:
+            print("default")
+         
+        }
+        
       }
 
       func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

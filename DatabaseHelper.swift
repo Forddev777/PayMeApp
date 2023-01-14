@@ -62,11 +62,15 @@ class DatabaseHelper{
                 $0.setting_type == "รายจ่าย"})
     }
     
-//
-//    func getAllDetele() -> [Model_data] {
-//        return Array(realm.objects(Model_data.self).where {
-//            $0.PKeyid ==  PKid.self })
-//    }
+    
+     func getAllType() -> [Model_Setting] {
+         return Array(realm.objects(Model_Setting.self))
+     }
+    
+    
+     func getAllModeldata() -> [Model_data] {
+         return Array(realm.objects(Model_data.self))
+     }
     
    
     func getAllInTyper() -> [Model_Setting] {

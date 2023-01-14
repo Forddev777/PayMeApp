@@ -1,14 +1,7 @@
-//
-//  AddSetingViewController.swift
-//  PayMeApp
-//
-//  Created by suriya taothongkom on 4/12/2565 BE.
-//
 
 import UIKit
 
-class AddSetingViewController: UIViewController , UITextFieldDelegate , UIPickerViewDelegate , UIPickerViewDataSource    {
-   
+class SettingIncomedetailViewController: UIViewController , UITextFieldDelegate , UIPickerViewDelegate , UIPickerViewDataSource   {
     var Model_data_Array = [Model_Setting]()
     var text_fixld_type: UITextField?
     var data_type: [String] = []
@@ -18,30 +11,23 @@ class AddSetingViewController: UIViewController , UITextFieldDelegate , UIPicker
         didSet { text_fixld_detail?.AddDone_CancelToolbar()}
     }
     override func viewDidLoad() {
-        data_type = ["รายรับ", "รายจ่าย"]
         super.viewDidLoad()
-        view.backgroundColor = .darkGray
-        let label = UILabel(frame: CGRect(x: 0 ,
-                                          y: 0.05 * self.view.frame.size.width,
-                                          width: self.view.frame.size.width ,
-                                          height: 25))
-        label.textAlignment = .center
-        label.text = "ตั้งค่า"
-        label.textColor = .white
-        label.font = UIFont(name: "Halvetica", size: 25)
-        self.view.addSubview(label)
+        view.backgroundColor = UIColor(red: 0.31, green: 0.76, blue: 0.59, alpha: 1.00)
+        navigationItem.title = "ตั้งค่ารายรับ"
+        data_type = ["รายรับ", "รายจ่าย"]
         text_fixld_type = UITextField.init(frame:(CGRect(x: 15,
                                                                 y: self.view.frame.size.height * 0.1,
                                                                 width: self.view.frame.size.width * 0.90 ,
                                                                 height: self.view.frame.size.height * 0.05)))
-        text_fixld_type?.placeholder = "ระบุประเภทที่ต้องการเพิ่มใหม่"
         text_fixld_type?.textColor = .black
         text_fixld_type?.textAlignment = .center
         text_fixld_type?.backgroundColor = .white
         text_fixld_type?.borderStyle = .roundedRect
-        text_fixld_type?.inputView = viewPicker
-        viewPicker.dataSource = self
-        viewPicker.delegate = self
+        text_fixld_type?.text = "รายรับ"
+        text_fixld_type?.isUserInteractionEnabled = false
+//        text_fixld_type?.inputView = viewPicker
+//        viewPicker.dataSource = self
+//        viewPicker.delegate = self
         self.view.addSubview(text_fixld_type!)
         
         text_fixld_detail = UITextField.init(frame:
@@ -67,16 +53,14 @@ class AddSetingViewController: UIViewController , UITextFieldDelegate , UIPicker
         Button_Save_Data?.titleLabel?.textAlignment  = .center
         Button_Save_Data?.addTarget(self, action: #selector(save_setting(_:)), for: .touchUpInside)
         self.view.addSubview(Button_Save_Data!)
-        
-        
-}
+      
+    }
     
     @IBAction func save_setting(_ sender: UIButton){
         
         if(text_fixld_type?.text != "" && text_fixld_detail?.text != ""  ){
             let set_data_type = text_fixld_type?.text!
             let set_data_detail = text_fixld_detail?.text!
-            
             let model_seting = Model_Setting(setting_type: set_data_type, setting_type_in_ex: set_data_detail)
             self.Model_data_Array.append(model_seting)
             DatabaseHelper.shared.saveSetting(contact: model_seting)
@@ -111,6 +95,6 @@ class AddSetingViewController: UIViewController , UITextFieldDelegate , UIPicker
     }
     
     
+    
+
 }
-
-

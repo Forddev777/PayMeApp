@@ -40,7 +40,7 @@ class AddExViewController: UIViewController  , UITextFieldDelegate  , UIPickerVi
     let dateFormatter = DateFormatter()
     var callbackSuccess: (() -> ())?
     override func viewDidLoad() {
-        super.viewDidLoad()
+    super.viewDidLoad()
         
     data_type_income =  DatabaseHelper.shared.getAllExTyper()
     view.backgroundColor = UIColor(red: 1.00, green: 0.26, blue: 0.26, alpha: 1.00)

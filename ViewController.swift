@@ -38,13 +38,12 @@ class ViewController: UIViewController , ChartViewDelegate {
     var callback: ((String?)->())?
     var SectionDay:  String!
     var PKid: String = ""
-    
+    weak var playButton: UIButton!
     override func viewDidLoad() {
         //        axisFormatDelegate = self
         
         configuration()
         super.viewDidLoad()
-        
         
         months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
         let unitsSold = [20.0, 4.0, 6.0, 3.0, 12.0, 16.0, 4.0, 18.0, 2.0, 4.0, 5.0, 4.0]
@@ -70,6 +69,7 @@ class ViewController: UIViewController , ChartViewDelegate {
         Label_Time.layer.shadowOpacity = 2.0
         Label_Time.layer.shadowOffset = CGSize(width: 1, height: 4)
         Label_Time.layer.masksToBounds = false
+       
         Button_action.addItem(title: "เพิ่มรายรับ", icon: UIImage(systemName: "dollarsign.circle" )){
             item in
             self.present(self.AddINView(forType: "Home"), animated: true, completion: nil)
@@ -82,19 +82,18 @@ class ViewController: UIViewController , ChartViewDelegate {
             item in
             self.present(self.SetingView(forType: "Seting") , animated: true, completion: nil)
         }
-        Button_action.addItem(title: "ตั้งค่าnew", icon: UIImage(systemName: "gearshape")){
+        Button_action.addItem(title: "ตั้งค่าnew", icon: UIImage(systemName: "gearshape")){ [self]
             item in
-            
-            self.present(self.SettingNewViewController(forType: "SettingNew"), animated: true, completion: nil)
-            
+        
+            self.present(self.SettingNewViewController(forType: "SettingNewViewController"), animated: true, completion: nil)
+           
+       
         }
-        
-        
         // pull to refesh in ios swift //
         //        TableView.refreshControl = UIRefreshControl()
         //        TableView.refreshControl?.addTarget(self, action: #selector(configuration), for: .valueChanged)
     }
-    
+
     func SortDay(){
         let items = DatabaseHelper.shared.getAllContacts()
         itemDates = items.reduce(into: [Date](), { results, currentItem in
@@ -112,11 +111,10 @@ class ViewController: UIViewController , ChartViewDelegate {
         groupedItems = itemDates.reduce(into: [Date:Results<Model_data>](),
                                         { results, date in
             let beginningOfDay = Calendar.current.date(from: DateComponents(year: Calendar.current.component(.year, from: date), month:                                          Calendar.current.component(.month, from: date), day: Calendar.current.component(.day, from: date), hour: 0, minute: 0, second: 0))!
-            let endOfDay =       Calendar.current.date(from: DateComponents(year: Calendar.current.component(.year, from: date), month:                                    Calendar.current.component(.month, from: date), day: Calendar.current.component(.day, from: date), hour: 23, minute: 59, second: 59))!
+            let endOfDay =  Calendar.current.date(from: DateComponents(year: Calendar.current.component(.year, from: date), month:                                    Calendar.current.component(.month, from: date), day: Calendar.current.component(.day, from: date), hour: 23, minute: 59, second: 59))!
             results[beginningOfDay] = realm.objects(Model_data.self).filter("expenses_Date >= %@ AND expenses_Date <= %@", beginningOfDay, endOfDay)
         })
     }
-    
     func SumLabel() {
         let getdataIncome =  DatabaseHelper.shared.getAllContacts()
         let getdataExpen = DatabaseHelper.shared.getAllContacts()
@@ -130,13 +128,10 @@ class ViewController: UIViewController , ChartViewDelegate {
         }
         SumIncomeLabel.text! = String(SumIncome)
         SumExpenLabel.text! = String(SumExpense)
-        //ค่าใช้จ่ายทั้งหมด
-        //ค่าใช้จ่าย
+        
         // enum [ธันวา , พฤศจิกา , ตุลา  , กันยา  , สิงหา  , กรกฏา  , มิถุนายน , พฤษภาคม , เมษายน , มีนาคม , กุมภาพัน ,มกราคม ]
         
     }
-    
-    
     @objc  func configuration(){
         TableView.delegate = self
         TableView.dataSource = self
@@ -172,28 +167,33 @@ class ViewController: UIViewController , ChartViewDelegate {
         return vcEX
     }
     private func SetingView(forType type: String) -> UIViewController {
+        let NavigationController = UINavigationController()
         let vcseting = AddSetingViewController()
-        vcseting.modalPresentationStyle = .pageSheet
+        vcseting.modalPresentationStyle = .overFullScreen
+        
         navigationController?.pushViewController(vcseting , animated: true)
-        return vcseting
+        return NavigationController
     }
     
-    private func SettingNewViewController(forType type: String ) -> UIViewController {
-        let SetingNewViewController = SettingViewController()
-        //        SetingNewViewController.modalPresentationStyle = .overFullScreen
-        navigationController?.pushViewController(SetingNewViewController, animated: true)
-        
-        return SetingNewViewController
-        
+     func SettingNewViewController(forType type: String ) -> UIViewController {
+//        let SetingNewViewController = SettingViewController()
+//         SetingNewViewController.navigationController?.navigationBar.barTintColor = .cyan
+//         SetingNewViewController.modalPresentationStyle = .fullScreen
+//        navigationController?.pushViewController(SetingNewViewController , animated: true)
+         
+         let NavigationController = UINavigationController()
+         let settingview = SettingViewController()
+         settingview.modalPresentationStyle = .fullScreen
+         NavigationController.pushViewController(settingview, animated: true)
+        return NavigationController
+
     }
     
-    
-    //
+//    how to fullscreen
     //    private func AddExView(){
     ////        let vcEX = AddExViewController()
     ////        navigationController?.pushViewController(vcEX, animated: true)
     ////        return vcEX
-    //
     //        let story = UIStoryboard(name: "Main_In", bundle: nil)
     //        let controller = story.instantiateViewController(withIdentifier: "AddExViewController") as!
     //        AddExViewController
@@ -302,7 +302,6 @@ extension ViewController : UITableViewDelegate  , UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return groupedItems[itemDates[section]]!.count
         
-        
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "DefaultCell", for: indexPath) as! MyTableViewCell
@@ -336,17 +335,25 @@ extension ViewController : UITableViewDelegate  , UITableViewDataSource {
     }
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let deleteAction = UIContextualAction(style: .destructive , title: "DELETE") {(action, view, completion) in
-            //                    self.removeObjId(atIndexPath: indexPath)
-            //
             let dataDelete = self.Model_data_Array[indexPath.row]
-            print(dataDelete)
-            let realm = try! Realm()
-            try! realm.write {
-                realm.delete(dataDelete)
+            let alertController = UIAlertController(title: "Default Style", message: "A standard alert.", preferredStyle: .alert)
+            let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (action) in
+              // do something
             }
-
-            self.TableView.deleteRows(at: [indexPath], with: .automatic)
-            self.TableView.reloadData()
+            alertController.addAction(cancelAction)
+            let OKAction = UIAlertAction(title: "OK", style: .default) { (action) in
+                let realm = try! Realm()
+                try! realm.write {
+                    realm.delete(dataDelete)
+                }
+                self.TableView.deleteRows(at: [indexPath], with: .automatic)
+                self.TableView.reloadData()
+            }
+            alertController.addAction(OKAction)
+            self.present( alertController , animated: true )
+//            present(alertController, animated: true)
+//            print(dataDelete)
+          
         }
         deleteAction.backgroundColor = UIColor(red: 1.00, green: 0.00, blue: 0.00, alpha: 1.00)
         return UISwipeActionsConfiguration(actions: [deleteAction])
