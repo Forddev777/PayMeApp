@@ -48,9 +48,7 @@ class ViewController: UIViewController , ChartViewDelegate {
         months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
         let unitsSold = [20.0, 4.0, 6.0, 3.0, 12.0, 16.0, 4.0, 18.0, 2.0, 4.0, 5.0, 4.0]
         setChart(dataPoints: months, values: unitsSold)
-        
         PieChart.delegate = self
-        
         TableView.register(UINib.init(nibName: MyCellId  , bundle: nil), forCellReuseIdentifier: "DefaultCell")
         TableView.rowHeight = UITableView.automaticDimension
         TableView.separatorColor = UIColor.clear
@@ -69,7 +67,6 @@ class ViewController: UIViewController , ChartViewDelegate {
         Label_Time.layer.shadowOpacity = 2.0
         Label_Time.layer.shadowOffset = CGSize(width: 1, height: 4)
         Label_Time.layer.masksToBounds = false
-       
         Button_action.addItem(title: "เพิ่มรายรับ", icon: UIImage(systemName: "dollarsign.circle" )){
             item in
             self.present(self.AddINView(forType: "Home"), animated: true, completion: nil)
@@ -84,10 +81,7 @@ class ViewController: UIViewController , ChartViewDelegate {
         }
         Button_action.addItem(title: "ตั้งค่าnew", icon: UIImage(systemName: "gearshape")){ [self]
             item in
-        
             self.present(self.SettingNewViewController(forType: "SettingNewViewController"), animated: true, completion: nil)
-           
-       
         }
         // pull to refesh in ios swift //
         //        TableView.refreshControl = UIRefreshControl()
@@ -183,6 +177,13 @@ class ViewController: UIViewController , ChartViewDelegate {
          
          let NavigationController = UINavigationController()
          let settingview = SettingViewController()
+         settingview.callbackSuccess = {
+          
+//             self.Model_data_Array = DatabaseHelper.shared.getAllContacts()
+//             self.SortDay()
+//             self.SumLabel()
+             self.TableView.reloadData()
+         }
          settingview.modalPresentationStyle = .fullScreen
          NavigationController.pushViewController(settingview, animated: true)
         return NavigationController
@@ -346,7 +347,7 @@ extension ViewController : UITableViewDelegate  , UITableViewDataSource {
                 try! realm.write {
                     realm.delete(dataDelete)
                 }
-                self.TableView.deleteRows(at: [indexPath], with: .automatic)
+                self.TableView.deleteRows(at: [indexPath], with: .fade)
                 self.TableView.reloadData()
             }
             alertController.addAction(OKAction)

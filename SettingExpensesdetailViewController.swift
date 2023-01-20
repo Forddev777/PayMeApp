@@ -69,7 +69,8 @@ class SettingExpensesdetailViewController: UIViewController , UITextFieldDelegat
         if(text_fixld_type?.text != "" && text_fixld_detail?.text != ""  ){
             let set_data_type = text_fixld_type?.text!
             let set_data_detail = text_fixld_detail?.text!
-            let model_seting = Model_Setting(setting_type: set_data_type, setting_type_in_ex: set_data_detail)
+            let model_seting = Model_Setting(setting_type: set_data_type ?? ""
+                                             , setting_type_in_ex: set_data_detail ?? "" )
             self.Model_data_Array.append(model_seting)
             DatabaseHelper.shared.saveSetting(contact: model_seting)
             self.dismiss(animated: true, completion: nil)
@@ -81,7 +82,6 @@ class SettingExpensesdetailViewController: UIViewController , UITextFieldDelegat
             
         }
         
-    
     }
                                     
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
@@ -92,7 +92,6 @@ class SettingExpensesdetailViewController: UIViewController , UITextFieldDelegat
         data_type.count
     }
     
-    
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         data_type[row]
        }
@@ -101,8 +100,7 @@ class SettingExpensesdetailViewController: UIViewController , UITextFieldDelegat
         text_fixld_type!.text = data_type[row]
 
     }
-    
-    
+
 
     /*
     // MARK: - Navigation

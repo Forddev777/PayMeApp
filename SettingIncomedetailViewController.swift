@@ -61,7 +61,8 @@ class SettingIncomedetailViewController: UIViewController , UITextFieldDelegate 
         if(text_fixld_type?.text != "" && text_fixld_detail?.text != ""  ){
             let set_data_type = text_fixld_type?.text!
             let set_data_detail = text_fixld_detail?.text!
-            let model_seting = Model_Setting(setting_type: set_data_type, setting_type_in_ex: set_data_detail)
+            let model_seting = Model_Setting(setting_type: set_data_type ?? "" ,
+                                             setting_type_in_ex: set_data_detail ?? "" )
             self.Model_data_Array.append(model_seting)
             DatabaseHelper.shared.saveSetting(contact: model_seting)
             self.dismiss(animated: true, completion: nil)

@@ -163,10 +163,10 @@ class AddINViewController: UIViewController , UITextFieldDelegate , UIPickerView
          return data_type_income.count
     }
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return data_type_income[row].setting_type_in_ex!
+        return data_type_income[row].setting_type_in_ex  ?? ""
        }
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        return text_fixld_type_income!.text = data_type_income[row].setting_type_in_ex!
+        return text_fixld_type_income!.text = data_type_income[row].setting_type_in_ex ?? "" 
     }
     
 }

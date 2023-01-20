@@ -13,9 +13,13 @@ struct Catagoitems {
     let items: [String]
     
 }
+
 class SettingViewController: UIViewController , UITableViewDelegate , UITableViewDataSource {
     private let myArray: NSArray = ["เพิ่มข้อมูลรายรับ","เพิ่มข้อมูลรายจ่าย","แก้ไขประเภทข้อมูล"]
     private var myTableView: UITableView!
+    var Model_data_Array = [Model_data]()
+    var Model_Setting_Array = [Model_Setting]()
+    var callbackSuccess: (() -> ())?
     override func viewDidLoad() {
        
         view.backgroundColor = .gray
@@ -67,7 +71,13 @@ class SettingViewController: UIViewController , UITableViewDelegate , UITableVie
         case 2:
             print("TypeList")
             let vcpass = ListTypeViewController()
+         
+               
+                self.myTableView.reloadData()
+         
+            
             vcpass.modalPresentationStyle = .overFullScreen
+         
             self.navigationController?.pushViewController( vcpass, animated:   true)
          
         default:

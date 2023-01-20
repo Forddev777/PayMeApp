@@ -5,8 +5,6 @@
 //  Created by suriya taothongkom on 2/12/2565 BE.
 //
 
-
-
 import Foundation
 import RealmSwift
 class DatabaseHelper{
@@ -63,10 +61,18 @@ class DatabaseHelper{
     }
     
     
-     func getAllType() -> [Model_Setting] {
+     func getAllModelSetting() -> [Model_Setting] {
          return Array(realm.objects(Model_Setting.self))
      }
     
+    
+  
+    
+//    
+//    func getDeleteModelSetting() -> [Model_Setting] {
+//        return Array(realm.delete(Model_Setting.self))
+//    }
+//   
     
      func getAllModeldata() -> [Model_data] {
          return Array(realm.objects(Model_data.self))

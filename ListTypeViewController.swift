@@ -11,12 +11,18 @@ class ListTypeViewController: UIViewController   , UITableViewDelegate , UITable
   
     var Model_data_Array = [Model_data]()
     var Model_Setting_Array = [Model_Setting]()
+    var Model_Setting_ArrayForDelete = [Model_Setting]()
+    var IndexItem : Results<Model_Setting>!
     var myTableView: UITableView!
     let MyCellId = "ListTypeTableViewCell"
-    let realm = try! Realm()
+//    let realm = try! Realm()
     
+    
+    var RowofModelSetting : Results<Model_Setting>?
+    var item:Model_Setting?
  
     override func viewDidLoad() {
+        
         super.viewDidLoad()
         navigationItem.title = "แก้ไขข้อมูล"
         view.backgroundColor =  .green
@@ -30,10 +36,9 @@ class ListTypeViewController: UIViewController   , UITableViewDelegate , UITable
               self.view.addSubview(myTableView)
 //        let getdataExpen = DatabaseHelper.shared.getAllType()
 //        print(getdataExpen)
-        
-        self.Model_Setting_Array =  DatabaseHelper.shared.getAllType()
+        self.Model_Setting_Array =  DatabaseHelper.shared.getAllModelSetting()
         self.Model_data_Array =  DatabaseHelper.shared.getAllModeldata()
-       
+        self.Model_Setting_ArrayForDelete =  DatabaseHelper.shared.getAllModelSetting()
     }
     
 //    func numberOfSections(in tableView: UITableView) -> Int {
@@ -56,7 +61,7 @@ class ListTypeViewController: UIViewController   , UITableViewDelegate , UITable
         
 //        cell.HeaderType.text  =  Model_data_Array[indexPath.row].setting_type
 //        cell.DetailType.text = Model_data_Array[indexPath.row].setting_type_in_ex
-        print(Model_Setting_Array[indexPath.row])
+//        print(Model_Setting_Array[indexPath.row])
        
         cell.Header.text  = Model_Setting_Array[indexPath.row].setting_type
         cell.Detail.text    = Model_Setting_Array[indexPath.row].setting_type_in_ex
@@ -81,42 +86,38 @@ class ListTypeViewController: UIViewController   , UITableViewDelegate , UITable
         return .none
     }
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        let deleteAction = UIContextualAction(style: .destructive , title: "DELETE") {(action, view, completion) in
-            let dataDelete = self.Model_data_Array[indexPath.row].expenses_Type
-            print(dataDelete)
+//
+        let deleteAction = UIContextualAction(style: .destructive , title: "DELETE") { (action, view, completion) in
+            let ModelSettingIndex = self.Model_Setting_Array[indexPath.row]
             let alertController = UIAlertController(title: "Default Style", message: "A standard alert.", preferredStyle: .alert)
+            let ModelSetting = DatabaseHelper.shared.getAllModelSetting()
+            let Modeldata = DatabaseHelper.shared.getAllModeldata()
+            var ResultArrayModelData: [String] = []
+            var ResultArrayModelSetting: [String] = []
+            for ForModeldata in Modeldata {
+                ResultArrayModelData.append(ForModeldata.expenses_Type)
+            }
+            for ForModelSetting in ModelSetting {
+                ResultArrayModelSetting.append(ForModelSetting.setting_type_in_ex )
+            }
             let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (action) in
             }
             alertController.addAction(cancelAction)
             let OKAction = UIAlertAction(title: "OK", style: .default) { (action) in
+            let meldArraySet  = Array(Set(ResultArrayModelData).intersection(Set(ResultArrayModelSetting)))
+                if meldArraySet.firstIndex(of: ModelSettingIndex.setting_type_in_ex ) != nil {
+                    print(" ไม่สามารถลบข้อมูลได้")
                 
-                
-//                let getAllModelData = DatabaseHelper.shared.getAllModeldata()
-//                var SumModeldata:String = ""
-//                for ForResultAllModel in getAllModelData {
-//                    SumModeldata += ForResultAllModel
-//
-//                if( dataDelete =  SumModeldata ){
-//                    print("ไม่สามารถลบหมวดหมู่ได้ เพราะกำลังถูกใช้งานในหน้าหลัก ")
-//                }else{
-//                    print("ลบข้อมูลได้")
-//                }
-                
-
-                
-//                if(dataDelete != self.Model_Setting_Array[indexPath.row].setting_type_in_ex  ){
-//                    print("ลบข้อมูลได้")
-//                }
-//
-                
-//                    ลบได้ก็ต่อเมื่อ ไม่มี record ในหน้า viewcontroller
-                
-//                let realm = try! Realm()
-//                try! realm.write {
-//                    realm.delete(dataDelete)
-//                }
-//                self.TableView.deleteRows(at: [indexPath], with: .automatic)
-//                self.TableView.reloadData()
+                } else {
+                    
+                    print("ลบข้อมูลได้")
+                        let realm = try! Realm()
+                        try! realm.write {
+                            realm.delete(ModelSettingIndex)
+                        }
+                        self.myTableView.deleteRows(at: [indexPath], with: .fade)
+                        self.myTableView.reloadData()
+                }
             }
             alertController.addAction(OKAction)
             self.present( alertController , animated: true )
@@ -124,9 +125,9 @@ class ListTypeViewController: UIViewController   , UITableViewDelegate , UITable
         deleteAction.backgroundColor = UIColor(red: 1.00, green: 0.00, blue: 0.00, alpha: 1.00)
         return UISwipeActionsConfiguration(actions: [deleteAction])
     }
-    
-    
-    
 
+    override func viewWillAppear(_ animated: Bool){
+        self.myTableView.reloadData()
+    }
 
 }
