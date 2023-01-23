@@ -347,7 +347,8 @@ extension ViewController : UITableViewDelegate  , UITableViewDataSource {
                 try! realm.write {
                     realm.delete(dataDelete)
                 }
-                self.TableView.deleteRows(at: [indexPath], with: .fade)
+                self.Model_data_Array.remove(at: indexPath.row)
+                self.TableView.deleteRows(at: [indexPath], with: .automatic)
                 self.TableView.reloadData()
             }
             alertController.addAction(OKAction)

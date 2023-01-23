@@ -45,6 +45,8 @@ class DatabaseHelper{
             realm.delete(contact)}
     }
 
+    
+    
     func getAllContacts() -> [Model_data] {
         return Array(realm.objects(Model_data.self).sorted(byKeyPath: "expenses_Date", ascending: false ))
     }

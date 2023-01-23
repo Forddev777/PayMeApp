@@ -89,6 +89,7 @@ class ListTypeViewController: UIViewController   , UITableViewDelegate , UITable
 //
         let deleteAction = UIContextualAction(style: .destructive , title: "DELETE") { (action, view, completion) in
             let ModelSettingIndex = self.Model_Setting_Array[indexPath.row]
+            print(ModelSettingIndex)
             let alertController = UIAlertController(title: "Default Style", message: "A standard alert.", preferredStyle: .alert)
             let ModelSetting = DatabaseHelper.shared.getAllModelSetting()
             let Modeldata = DatabaseHelper.shared.getAllModeldata()
@@ -107,15 +108,15 @@ class ListTypeViewController: UIViewController   , UITableViewDelegate , UITable
             let meldArraySet  = Array(Set(ResultArrayModelData).intersection(Set(ResultArrayModelSetting)))
                 if meldArraySet.firstIndex(of: ModelSettingIndex.setting_type_in_ex ) != nil {
                     print(" ไม่สามารถลบข้อมูลได้")
-                
                 } else {
-                    
                     print("ลบข้อมูลได้")
                         let realm = try! Realm()
+                        print(ModelSettingIndex)
                         try! realm.write {
                             realm.delete(ModelSettingIndex)
                         }
-                        self.myTableView.deleteRows(at: [indexPath], with: .fade)
+                        self.Model_Setting_Array.remove(at: indexPath.row)
+                       self.myTableView.deleteRows(at: [indexPath], with: .automatic)
                         self.myTableView.reloadData()
                 }
             }
