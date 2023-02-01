@@ -18,8 +18,15 @@ class ViewController: UIViewController , ChartViewDelegate {
     let TimeFormatter = DateFormatter()
     let numberFormatter = NumberFormatter()
     @IBOutlet weak var Label_Time: UILabel!
-    @IBOutlet weak var View_Grahp: UIView!
+    
+
+    @IBOutlet weak var PieChart: BarChartView!
+    
+
+    // test
     @IBOutlet weak var TableView: UITableView!
+    // test
+    @IBOutlet weak var View_Header: UIView!
     let MyCellId = "MyTableViewCell"
     //    @IBOutlet weak var Label_text: UILabel!
     var Activity_Header = [Date:[String]]()
@@ -27,7 +34,8 @@ class ViewController: UIViewController , ChartViewDelegate {
     var dataIn_Exs: [String] = []
     var date_section: String = ""
     @IBOutlet weak var Button_action: StickyButton!
-    var PieChart = PieChartView()
+    
+//    var PieChart = PieChartView()
     @IBOutlet weak var SumIncomeLabel: UILabel!
     @IBOutlet weak var SumExpenLabel: UILabel!
     let realm = try! Realm()
@@ -40,15 +48,29 @@ class ViewController: UIViewController , ChartViewDelegate {
     var PKid: String = ""
     weak var playButton: UIButton!
     override func viewDidLoad() {
-        //        axisFormatDelegate = self
-        
+      
         configuration()
+        SumLabel()
         super.viewDidLoad()
+        let SetdataModel =  DatabaseHelper.shared.getAllContacts()
         
-        months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
-        let unitsSold = [20.0, 4.0, 6.0, 3.0, 12.0, 16.0, 4.0, 18.0, 2.0, 4.0, 5.0, 4.0]
-        setChart(dataPoints: months, values: unitsSold)
-        PieChart.delegate = self
+        var SumdataModel: [Double] = []
+        for ForResultModel in SetdataModel{
+            SumdataModel.append(Double(ForResultModel.expenses_Salary))
+        }
+//        var SumTypelist: [String] = []
+//        for ForResultTypelistModel in SetdataModel{
+//            SumTypelist.append(ForResultTypelistModel.expenses_SetMonth)
+//        }
+       
+//        let SumTypelist = ["มกราคม" , "กุมภาพัน" , "มีนาคม" , "เมษายน" , "พฤษภาคม"  , "มิิถุนายน" , "กรกฏาคม" , "สิงหาคม" , "กันยายน" , "ตุลาคม" , "พฤศจิกายน" , "ธันวาคม"]
+        let SumTypelist2 = ["ม.ค." , "ก.พ." , "มี.ค." , "เม.ย." , "พ.ค."  , "มิ.ย." , "ก.ค." , "ส.ค." , "ก.ย." , "ต.ค." , "พ.ย." , "ธ.ค"]
+        let goals = [5, 3,3,7,5,6 ,9 , 8 ,9 ,2, 11, 1]
+        let unitsBought = [10.0, 14.0, 60.0, 13.0, 2.0]
+        setChart(dataPoints: SumTypelist2, values: goals.map{ Double($0)  })
+        print(SumdataModel)
+//        print(goals)
+//        PieChartView.delegate = self
         TableView.register(UINib.init(nibName: MyCellId  , bundle: nil), forCellReuseIdentifier: "DefaultCell")
         TableView.rowHeight = UITableView.automaticDimension
         TableView.separatorColor = UIColor.clear
@@ -74,10 +96,6 @@ class ViewController: UIViewController , ChartViewDelegate {
         Button_action.addItem(title: "เพิ่มรายจ่าย", icon: UIImage(systemName: "dollarsign.square")){
             item in
             self.present(self.AddExView(forType: "EX") , animated: true, completion: nil)
-        }
-        Button_action.addItem(title: "ตั้งค่า", icon: UIImage(systemName: "gearshape")){
-            item in
-            self.present(self.SetingView(forType: "Seting") , animated: true, completion: nil)
         }
         Button_action.addItem(title: "ตั้งค่าnew", icon: UIImage(systemName: "gearshape")){ [self]
             item in
@@ -122,16 +140,12 @@ class ViewController: UIViewController , ChartViewDelegate {
         }
         SumIncomeLabel.text! = String(SumIncome)
         SumExpenLabel.text! = String(SumExpense)
-        
-        // enum [ธันวา , พฤศจิกา , ตุลา  , กันยา  , สิงหา  , กรกฏา  , มิถุนายน , พฤษภาคม , เมษายน , มีนาคม , กุมภาพัน ,มกราคม ]
-        
     }
     @objc  func configuration(){
         TableView.delegate = self
         TableView.dataSource = self
         Model_data_Array = DatabaseHelper.shared.getAllContacts()
         self.TableView.reloadData()
-        //        self.TableView.refreshControl?.endRefreshing()
         self.SortDay()
         TableView.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
     }
@@ -160,28 +174,10 @@ class ViewController: UIViewController , ChartViewDelegate {
         navigationController?.pushViewController(vcEX, animated: true)
         return vcEX
     }
-    private func SetingView(forType type: String) -> UIViewController {
-        let NavigationController = UINavigationController()
-        let vcseting = AddSetingViewController()
-        vcseting.modalPresentationStyle = .overFullScreen
-        
-        navigationController?.pushViewController(vcseting , animated: true)
-        return NavigationController
-    }
-    
      func SettingNewViewController(forType type: String ) -> UIViewController {
-//        let SetingNewViewController = SettingViewController()
-//         SetingNewViewController.navigationController?.navigationBar.barTintColor = .cyan
-//         SetingNewViewController.modalPresentationStyle = .fullScreen
-//        navigationController?.pushViewController(SetingNewViewController , animated: true)
-         
          let NavigationController = UINavigationController()
          let settingview = SettingViewController()
          settingview.callbackSuccess = {
-          
-//             self.Model_data_Array = DatabaseHelper.shared.getAllContacts()
-//             self.SortDay()
-//             self.SumLabel()
              self.TableView.reloadData()
          }
          settingview.modalPresentationStyle = .fullScreen
@@ -190,112 +186,49 @@ class ViewController: UIViewController , ChartViewDelegate {
 
     }
     
-//    how to fullscreen
-    //    private func AddExView(){
-    ////        let vcEX = AddExViewController()
-    ////        navigationController?.pushViewController(vcEX, animated: true)
-    ////        return vcEX
-    //        let story = UIStoryboard(name: "Main_In", bundle: nil)
-    //        let controller = story.instantiateViewController(withIdentifier: "AddExViewController") as!
-    //        AddExViewController
-    //        self.present(controller, animated: true, completion: nil)
-    //
-    //
-    //    }
-    
-    func setChart(dataPoints: [String], values: [Double]) {
-        let PieChart = PieChartView(frame: CGRect(x: 14, y: 100, width: View_Grahp.frame.size.width  , height: View_Grahp.frame.size.height  ))
-        var dataEntries: [ChartDataEntry] = []
+       func setChart(dataPoints: [String],  values: [Double] ) {
+        var dataEntries: [BarChartDataEntry] = []
+        var dataEntries1: [BarChartDataEntry] = []
+           
         for i in 0..<dataPoints.count {
-            //                 let dataEntry = ChartDataEntry(x: values[i], y: Double(i))
-            let dataEntry = ChartDataEntry(x: values[i], y: Double(i))
+          let dataEntry = BarChartDataEntry(
+                                            x: Double(i),
+                                            y: Double(values[i]) , data: months as AnyObject?)
+//            [Double(values[i])]
             dataEntries.append(dataEntry)
-        }
-        let pieChartDataSet = PieChartDataSet(entries: dataEntries, label: "Units Sold")
-        pieChartDataSet.colors = ChartColorTemplates.material()
+            
+
+          
+            
+//            print(dataPoints)
         
-        let pieChartData =  PieChartData(dataSet: pieChartDataSet)
-        PieChart.data = pieChartData
-        View_Grahp.addSubview(PieChart)
-        PieChart.center = View_Grahp.center
+        }
+        let chartDataSet = BarChartDataSet(entries: dataEntries, label: "dwdw")
+        let chartDataSet1 = BarChartDataSet(entries: dataEntries1, label: "Unit Bought")
+//        let chartData = BarChartData(dataSet: chartDataSet)
+           let dataSets: [BarChartDataSet] = [chartDataSet,chartDataSet1]
+           chartDataSet.colors = [UIColor(red: 230/255, green: 126/255, blue: 34/255, alpha: 1)]
+           let chartData = BarChartData(dataSets: dataSets)
+           
+           PieChart.xAxis.valueFormatter = IndexAxisValueFormatter(values: dataPoints)
+           PieChart.xAxis.granularityEnabled = true
+           PieChart.xAxis.drawGridLinesEnabled = false
+           PieChart.xAxis.drawAxisLineEnabled = false
+         
+        PieChart.xAxis.labelPosition = .bottom
+           PieChart.xAxis.labelCount = 30
+           PieChart.xAxis.granularity = 1
+           PieChart.leftAxis.enabled = true
+        PieChart.data = chartData
+           PieChart.data = chartData2
+        PieChart.center = view.center
+           PieChart.backgroundColor = .clear
+        PieChart.animate(xAxisDuration: 1.0, yAxisDuration: 1.0)
+
     }
-    
-    //    var dataEntries: [BarChartDataEntry] = []
-    
-    //    for i in 0..<dataPoints.count {
-    //        let dataEntry = BarChartDataEntry(value: values[i], xIndex: i)
-    //        dataEntries.append(dataEntry)
-    //    }
-    //
-    //    let chartDataSet = BarChartDataSet(yVals: dataEntries, label: "Units Sold")
-    //    let chartData = BarChartData(xVals: months, dataSet: chartDataSet)
-    //    barChartView.data = chartData
-    
-    
-    //    override func viewDidLayoutSubviews() {
-    //        super.viewDidLayoutSubviews()
-    //        barChart.frame  = CGRect(x: 0 ,
-    //                                 y: 0 ,
-    //                                 width:  self.View_Grahp.frame.size.width,
-    //                                 height: self.View_Grahp.frame.size.height  )
-    //
-    //
-    //        View_Grahp.addSubview(barChart)
-    
-    //        var entries = [BarChartDataEntry]()
-    
-    //        for x in 0..<5 {
-    //            entries.append(BarChartDataEntry(x: Double(x),
-    //                                             y: Double(x)))
-    //        }
-    //
-    //        let set = BarChartDataSet(entries: entries)
-    //
-    //        set.colors = [UIColor(red: 1.00, green: 0.26, blue: 0.26, alpha: 1.00)]
-    //       // FE4343
-    //        let data = BarChartData(dataSet: set)
-    //        barChart.data = data
-    //        let visitorCounts = getVisitorCountsFromDatabase()
-    //          for i in 0..<visitorCounts.count {
-    //            let timeIntervalForDate: TimeInterval = visitorCounts[i].date.timeIntervalSince1970
-    //            let dataEntry = BarChartDataEntry(x: Double(timeIntervalForDate), y: Double(visitorCounts[i].count))
-    //            dataEntries.append(dataEntry)
-    //          }
-    //          let chartDataSet = BarChartDataSet(values: dataEntries, label: "Visitor count")
-    //          let chartData = BarChartData(dataSet: chartDataSet)
-    //          barView.data = chartData
-    //
-    //          let xaxis = barView.xAxis
-    //          xaxis.valueFormatter = axisFormatDelegate
-    
-    // }
-    
-    override func viewWillAppear(_ animated: Bool){
-        self.TableView.reloadData()
-        SumLabel()
-    }
-    
-    //    func deleteContact(contact: Model_data ){
-    //        try! realm.write{
-    //            realm.delete(contact)}
-    //    }
-    
-    
-    //        func removeObjId(atIndexPath indexPath: IndexPath){
-    //        let QueryDb =  DatabaseHelper.shared.getAllContactsForDetete()
-    //            let itemsForDate = groupedItems[itemDates[indexPath.section]]!
-    //            for QueryForPKID in QueryDb where QueryForPKID.PKeyid  == Array(itemsForDate.sorted(byKeyPath: "expenses_Date"))[indexPath.row].PKeyid{
-    //                PKid += (QueryForPKID.PKeyid)
-    //            }
-    //            print(PKid)
-    //            do{
-    //                let alert = UIAlertController(title: PKid, message: "ลองใหม่อีกครั้ง", preferredStyle: UIAlertController.Style.alert)
-    //                alert.addAction(UIAlertAction(title: "ตกลง", style: UIAlertAction.Style.default, handler: nil))
-    //                self.present(alert, animated: true, completion: nil)
-    //            }
-    //
     
 }
+
 extension ViewController : UITableViewDelegate  , UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         return   itemDates.count // กลุ่มชุดข้อมูล
@@ -361,7 +294,6 @@ extension ViewController : UITableViewDelegate  , UITableViewDataSource {
         return UISwipeActionsConfiguration(actions: [deleteAction])
     }
     
-    
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         let DaySection = SectionDay.self
         if(DaySection != nil ){
@@ -371,12 +303,7 @@ extension ViewController : UITableViewDelegate  , UITableViewDataSource {
         return ""
         
     }
-    
-    
-    
-    
-    
-    
+
     //        func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     
     //
@@ -405,8 +332,6 @@ extension ViewController : UITableViewDelegate  , UITableViewDataSource {
     //            cell.type_Label?.text = "จ่าย / รับ "
     //
     //
-    
-    
     //            Cell.layer.cornerRadius  =  15
     //            Cell.layer.shadowColor = UIColor.gray.cgColor
     //            Cell.layer.shadowRadius = 3.0

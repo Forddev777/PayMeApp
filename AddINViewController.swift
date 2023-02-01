@@ -123,11 +123,15 @@ class AddINViewController: UIViewController , UITextFieldDelegate , UIPickerView
             let v_Income_Description = text_fixld_detail?.text!
             let v_Income_text_heidden = text_Income.self
             let v_Income_Date  = Newdate
+            dateFormatter.dateFormat = "MMMM"
+            let month = dateFormatter.string(from: v_Income_Date ?? Date())
+            let v_IncomeSetMonth = month
             let model = Model_data(expenses_Salary: v_Income_number ,
                                    expenses_Type: v_Income_Type ?? "" ,
                                    expenses_Description: v_Income_Description ?? "" ,
                                    expenses_text_hidden: v_Income_text_heidden ,
-                                   expenses_Date: v_Income_Date ?? Date())
+                                   expenses_Date: v_Income_Date ?? Date(),
+                                   expenses_SetMonth : v_IncomeSetMonth)
             self.Model_data_Array.append(model)
             DatabaseHelper.shared.saveContact(contact: model)
             self.callbackSuccess?()
