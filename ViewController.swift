@@ -9,25 +9,38 @@ import UIKit
 import StickyButton
 import RealmSwift
 import Charts
+class CellClass: UITableViewCell {
+    
+}
+
 class ViewController: UIViewController , ChartViewDelegate {
     //    weak var axisFormatDelegate: IAxisValueFormatter?
     var Model_data_Array = [Model_data]()
-    @IBOutlet weak var Label_ToDate: UILabel!
+//    @IBOutlet weak var Label_ToDate: UILabel!
     let date = Date()
     let dateFormatter = DateFormatter()
     let TimeFormatter = DateFormatter()
     let numberFormatter = NumberFormatter()
-    @IBOutlet weak var Label_Time: UILabel!
+//    @IBOutlet weak var Label_Time: UILabel!
     
-
+    private let dataSource: NSArray = ["รายสัปดาห์","รายเดือน","รายปี"]
+    @IBOutlet weak var ButtonSelect: UIButton!
     @IBOutlet weak var PieChart: BarChartView!
     
-
+    var selectedButton = UIButton()
+//    var dataSource = [String]()
+    let transparentView = UIView()
+    let tableViewSelect = UITableView()
+    
+  
+    
     // test
     @IBOutlet weak var TableView: UITableView!
     // test
     @IBOutlet weak var View_Header: UIView!
     let MyCellId = "MyTableViewCell"
+    
+    let MyCell2 = "TableViewCell2"
     //    @IBOutlet weak var Label_text: UILabel!
     var Activity_Header = [Date:[String]]()
     var TodateSectionTitles = [String]()
@@ -47,48 +60,35 @@ class ViewController: UIViewController , ChartViewDelegate {
     var SectionDay:  String!
     var PKid: String = ""
     weak var playButton: UIButton!
+    
+   
+    
     override func viewDidLoad() {
-      
         configuration()
         SumLabel()
         super.viewDidLoad()
-        let SetdataModel =  DatabaseHelper.shared.getAllContacts()
-        
-        var SumdataModel: [Double] = []
-        for ForResultModel in SetdataModel{
-            SumdataModel.append(Double(ForResultModel.expenses_Salary))
-        }
-//        var SumTypelist: [String] = []
-//        for ForResultTypelistModel in SetdataModel{
-//            SumTypelist.append(ForResultTypelistModel.expenses_SetMonth)
-//        }
-       
-//        let SumTypelist = ["มกราคม" , "กุมภาพัน" , "มีนาคม" , "เมษายน" , "พฤษภาคม"  , "มิิถุนายน" , "กรกฏาคม" , "สิงหาคม" , "กันยายน" , "ตุลาคม" , "พฤศจิกายน" , "ธันวาคม"]
-        let SumTypelist2 = ["ม.ค." , "ก.พ." , "มี.ค." , "เม.ย." , "พ.ค."  , "มิ.ย." , "ก.ค." , "ส.ค." , "ก.ย." , "ต.ค." , "พ.ย." , "ธ.ค"]
-        let goals = [5, 3,3,7,5,6 ,9 , 8 ,9 ,2, 11, 1]
-        let unitsBought = [10.0, 14.0, 60.0, 13.0, 2.0]
-        setChart(dataPoints: SumTypelist2, values: goals.map{ Double($0)  })
-        print(SumdataModel)
-//        print(goals)
-//        PieChartView.delegate = self
         TableView.register(UINib.init(nibName: MyCellId  , bundle: nil), forCellReuseIdentifier: "DefaultCell")
+        tableViewSelect.register(UINib.init(nibName: MyCell2  , bundle: nil), forCellReuseIdentifier: "DefaultCell")
         TableView.rowHeight = UITableView.automaticDimension
         TableView.separatorColor = UIColor.clear
         dateFormatter.dateFormat = "dd MMMM yyyy"
         TimeFormatter.dateFormat = "HH:mm"
         dateFormatter.locale = Locale(identifier: "th")
-        Label_ToDate.text = "\u{00a0}\u{00a0}\(dateFormatter.string(from: date))\u{00a0}\u{00a0}"
-        Label_ToDate.layer.shadowColor = UIColor.gray.cgColor
-        Label_ToDate.layer.shadowRadius = 3.0
-        Label_ToDate.layer.shadowOpacity = 2.0
-        Label_ToDate.layer.shadowOffset = CGSize(width: 1, height: 4)
-        Label_ToDate.layer.masksToBounds = false
-        Label_Time.text = "\(TimeFormatter.string(from: date))"
-        Label_Time.layer.shadowColor = UIColor.gray.cgColor
-        Label_Time.layer.shadowRadius = 3.0
-        Label_Time.layer.shadowOpacity = 2.0
-        Label_Time.layer.shadowOffset = CGSize(width: 1, height: 4)
-        Label_Time.layer.masksToBounds = false
+       
+        
+//        Label_ToDate.text = "\u{00a0}\u{00a0}\(dateFormatter.string(from: date))\u{00a0}\u{00a0}"
+//        Label_ToDate.layer.shadowColor = UIColor.gray.cgColor
+//        Label_ToDate.layer.shadowRadius = 3.0
+//        Label_ToDate.layer.shadowOpacity = 2.0
+//        Label_ToDate.layer.shadowOffset = CGSize(width: 1, height: 4)
+//        Label_ToDate.layer.masksToBounds = false
+        
+//        Label_Time.text = "\(TimeFormatter.string(from: date))"
+//        Label_Time.layer.shadowColor = UIColor.gray.cgColor
+//        Label_Time.layer.shadowRadius = 3.0
+//        Label_Time.layer.shadowOpacity = 2.0
+//        Label_Time.layer.shadowOffset = CGSize(width: 1, height: 4)
+//        Label_Time.layer.masksToBounds = false
         Button_action.addItem(title: "เพิ่มรายรับ", icon: UIImage(systemName: "dollarsign.circle" )){
             item in
             self.present(self.AddINView(forType: "Home"), animated: true, completion: nil)
@@ -105,7 +105,38 @@ class ViewController: UIViewController , ChartViewDelegate {
         //        TableView.refreshControl = UIRefreshControl()
         //        TableView.refreshControl?.addTarget(self, action: #selector(configuration), for: .valueChanged)
     }
-
+    func addTransparentView(frames: CGRect) {
+           let window = UIApplication.shared.keyWindow
+           transparentView.frame = window?.frame ?? self.view.frame
+           self.view.addSubview(transparentView)
+           
+        tableViewSelect.frame = CGRect(x: frames.origin.x, y: frames.origin.y + frames.height , width: frames.width , height: 0)
+           self.view.addSubview(tableViewSelect)
+        tableViewSelect.layer.cornerRadius = 5
+           
+           transparentView.backgroundColor = UIColor.black.withAlphaComponent(0.9)
+        tableViewSelect.reloadData()
+           let tapgesture = UITapGestureRecognizer(target: self, action: #selector(removeTransparentView))
+           transparentView.addGestureRecognizer(tapgesture)
+           transparentView.alpha = 0
+           UIView.animate(withDuration: 0.4, delay: 0.0, usingSpringWithDamping: 1.0, initialSpringVelocity: 1.0, options: .curveEaseInOut, animations: {
+               self.transparentView.alpha = 0.5
+               self.tableViewSelect.frame = CGRect(x: frames.origin.x + 40, y: frames.origin.y + 40  + frames.height, width: frames.width + 100  , height: CGFloat(self.dataSource.count * 50))
+           }, completion: nil)
+       }
+    
+    @IBAction func onClickSelectType(_ sender: Any) {
+                selectedButton = ButtonSelect
+                addTransparentView(frames: ButtonSelect.frame)
+    }
+    
+    @objc func removeTransparentView() {
+            let frames = selectedButton.frame
+            UIView.animate(withDuration: 0.4, delay: 0.0, usingSpringWithDamping: 1.0, initialSpringVelocity: 1.0, options: .curveEaseInOut, animations: {
+                self.transparentView.alpha = 0
+                self.tableViewSelect.frame = CGRect(x: frames.origin.x, y: frames.origin.y + frames.height, width: frames.width, height: 0)
+            }, completion: nil)
+        }
     func SortDay(){
         let items = DatabaseHelper.shared.getAllContacts()
         itemDates = items.reduce(into: [Date](), { results, currentItem in
@@ -141,15 +172,19 @@ class ViewController: UIViewController , ChartViewDelegate {
         SumIncomeLabel.text! = String(SumIncome)
         SumExpenLabel.text! = String(SumExpense)
     }
-    @objc  func configuration(){
+    @objc func configuration(){
         TableView.delegate = self
         TableView.dataSource = self
+        tableViewSelect.delegate = self
+        tableViewSelect.dataSource = self
+      
         Model_data_Array = DatabaseHelper.shared.getAllContacts()
         self.TableView.reloadData()
         self.SortDay()
         TableView.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
+//        tableView.register(UINib.init(nibName: CellClass  , bundle: nil), forCellReuseIdentifier: "Cell")
+        tableViewSelect.register(UITableViewCell.self, forCellReuseIdentifier: "DefaultCell")
     }
-    
     private func AddINView(forType type: String) -> UIViewController {
         let vc = AddINViewController()
         vc.callbackSuccess = {
@@ -169,6 +204,7 @@ class ViewController: UIViewController , ChartViewDelegate {
             self.SortDay()
             self.SumLabel()
             self.TableView.reloadData()
+          
         }
         vcEX.modalPresentationStyle = .pageSheet
         navigationController?.pushViewController(vcEX, animated: true)
@@ -183,83 +219,93 @@ class ViewController: UIViewController , ChartViewDelegate {
          settingview.modalPresentationStyle = .fullScreen
          NavigationController.pushViewController(settingview, animated: true)
         return NavigationController
-
     }
-    
-       func setChart(dataPoints: [String],  values: [Double] ) {
+       func setChart(dataPoints: [String],  values:[Double] , values2: [Double] ) {
         var dataEntries: [BarChartDataEntry] = []
         var dataEntries1: [BarChartDataEntry] = []
-           
         for i in 0..<dataPoints.count {
-          let dataEntry = BarChartDataEntry(
-                                            x: Double(i),
-                                            y: Double(values[i]) , data: months as AnyObject?)
-//            [Double(values[i])]
-            dataEntries.append(dataEntry)
             
-
-          
+            let dataEntry =  BarChartDataEntry(x: Double(i), y:Double(values[i] ?? 0.0 ))
+                dataEntries.append(dataEntry)
+            print(values[i])
             
-//            print(dataPoints)
-        
+            let dataEntry1 = BarChartDataEntry(x: Double(i) , y: Double(values2[i]) ?? 0.0  )
+                dataEntries1.append(dataEntry1)
         }
-        let chartDataSet = BarChartDataSet(entries: dataEntries, label: "dwdw")
-        let chartDataSet1 = BarChartDataSet(entries: dataEntries1, label: "Unit Bought")
-//        let chartData = BarChartData(dataSet: chartDataSet)
+           let groupSpace = 0.54
+           let barSpace = 0.03
+           let barWidth = 0.2
+           let chartDataSet = BarChartDataSet(entries: dataEntries, label: "รายรับ")
+           let chartDataSet1 = BarChartDataSet(entries: dataEntries1, label: "รายจ่าย")
            let dataSets: [BarChartDataSet] = [chartDataSet,chartDataSet1]
-           chartDataSet.colors = [UIColor(red: 230/255, green: 126/255, blue: 34/255, alpha: 1)]
+               chartDataSet.colors = [UIColor(red: 230/255, green: 126/255, blue: 34/255, alpha: 1)]
            let chartData = BarChartData(dataSets: dataSets)
-           
-           PieChart.xAxis.valueFormatter = IndexAxisValueFormatter(values: dataPoints)
+           chartData.barWidth = barWidth
+           chartData.groupBars(fromX: Double(0), groupSpace: groupSpace, barSpace: barSpace)
+           PieChart.xAxis.axisMinimum = Double(0)
+           PieChart.xAxis.axisMaximum = Double(0) + chartData.groupWidth(groupSpace: groupSpace, barSpace: barSpace) * Double(12)  // group count : 2
+           chartData.groupBars(fromX: Double(0), groupSpace: groupSpace, barSpace: barSpace)
+           PieChart.data = chartData
+           let x_Axis = PieChart.xAxis
+               x_Axis.valueFormatter = IndexAxisValueFormatter(values:dataPoints)
+               x_Axis.centerAxisLabelsEnabled = true
+               x_Axis.granularity = 1
+           PieChart.xAxis.labelPosition = .bottom
            PieChart.xAxis.granularityEnabled = true
            PieChart.xAxis.drawGridLinesEnabled = false
            PieChart.xAxis.drawAxisLineEnabled = false
-         
-        PieChart.xAxis.labelPosition = .bottom
-           PieChart.xAxis.labelCount = 30
+           PieChart.xAxis.labelPosition = .bottom
+//           PieChart.xAxis.labelCount = 30
+           PieChart.xAxis.labelCount = dataPoints.count
+           
            PieChart.xAxis.granularity = 1
            PieChart.leftAxis.enabled = true
-        PieChart.data = chartData
-           PieChart.data = chartData2
-        PieChart.center = view.center
-           PieChart.backgroundColor = .clear
+//           PieChart.xAxis.valueFormatter = IndexAxisValueFormatter(values: dataPoints)
+//        PieChart.data = chartData
+//        PieChart.center = view.center
+          PieChart.backgroundColor = .clear
         PieChart.animate(xAxisDuration: 1.0, yAxisDuration: 1.0)
-
     }
-    
 }
-
 extension ViewController : UITableViewDelegate  , UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
-        return   itemDates.count // กลุ่มชุดข้อมูล
+        return   itemDates.count  // กลุ่มชุดข้อมูล
     }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if( tableView ==  tableViewSelect ){
+        return   dataSource.count
+        }
         return groupedItems[itemDates[section]]!.count
-        
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "DefaultCell", for: indexPath) as! MyTableViewCell
-        cell.selectionStyle = .none
-        numberFormatter.numberStyle = .decimal
-        let itemsForDate = groupedItems[itemDates[indexPath.section]]!
-        SectionDay = dateFormatter.string(from:  Array(itemsForDate.sorted(byKeyPath: "expenses_Date"))[indexPath.row].expenses_Date!)
-        cell.time_label?.text = SectionDay.self
-        cell.type_header_label?.text = Array(itemsForDate.sorted(byKeyPath: "expenses_Date"))[indexPath.row].expenses_Type
-        let formattedNumber = numberFormatter.string(from:NSNumber(value: Array(itemsForDate.sorted(byKeyPath: "expenses_Date"))[indexPath.row].expenses_Salary))
-        cell.number_label?.text = formattedNumber
-        cell.type_text_sta?.text =  Array(itemsForDate.sorted(byKeyPath: "expenses_Date"))[indexPath.row].expenses_text_hidden
-        if( cell.type_text_sta?.text  == "รายจ่าย") {
-            cell.number_label?.textColor = UIColor(red: 1.00, green: 0.26, blue: 0.26, alpha: 1.00)
-        }else{
-            cell.number_label?.textColor = UIColor(red: 0.31, green: 0.76, blue: 0.59, alpha: 1.00)
+        
+        if(tableView == TableView){
+            let cell = tableView.dequeueReusableCell(withIdentifier: "DefaultCell", for: indexPath) as! MyTableViewCell
+            cell.selectionStyle = .none
+            numberFormatter.numberStyle = .decimal
+            let itemsForDate = groupedItems[itemDates[indexPath.section]]!
+            SectionDay = dateFormatter.string(from:  Array(itemsForDate.sorted(byKeyPath: "expenses_Date"))[indexPath.row].expenses_Date!)
+            cell.time_label?.text = SectionDay.self
+            cell.type_header_label?.text = Array(itemsForDate.sorted(byKeyPath: "expenses_Date"))[indexPath.row].expenses_Type
+            let formattedNumber = numberFormatter.string(from:NSNumber(value: Array(itemsForDate.sorted(byKeyPath: "expenses_Date"))[indexPath.row].expenses_Salary))
+            cell.number_label?.text = formattedNumber
+            cell.type_text_sta?.text =  Array(itemsForDate.sorted(byKeyPath: "expenses_Date"))[indexPath.row].expenses_text_hidden
+            if( cell.type_text_sta?.text  == "รายจ่าย"){
+                cell.number_label?.textColor = UIColor(red: 1.00, green: 0.26, blue: 0.26, alpha: 1.00)
+            }else{
+                cell.number_label?.textColor = UIColor(red: 0.31, green: 0.76, blue: 0.59, alpha: 1.00)
+            }
+            cell.layer.cornerRadius  =  15
+            cell.layer.shadowColor = UIColor.gray.cgColor
+            cell.layer.shadowRadius = 3.0
+            cell.layer.shadowOpacity = 2.0
+            cell.layer.shadowOffset = CGSize(width: 2, height: 4)
+            cell.layer.masksToBounds = false
+            return cell
         }
-        cell.layer.cornerRadius  =  15
-        cell.layer.shadowColor = UIColor.gray.cgColor
-        cell.layer.shadowRadius = 3.0
-        cell.layer.shadowOpacity = 2.0
-        cell.layer.shadowOffset = CGSize(width: 2, height: 4)
-        cell.layer.masksToBounds = false
-        return cell
+            let cell2 = tableViewSelect.dequeueReusableCell(withIdentifier: "DefaultCell", for: indexPath) as! TableViewCell2
+        cell2.TypeSelectLabel?.text = dataSource[indexPath.row] as? String
+                   return cell2
     }
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         return true
@@ -288,7 +334,6 @@ extension ViewController : UITableViewDelegate  , UITableViewDataSource {
             self.present( alertController , animated: true )
 //            present(alertController, animated: true)
 //            print(dataDelete)
-          
         }
         deleteAction.backgroundColor = UIColor(red: 1.00, green: 0.00, blue: 0.00, alpha: 1.00)
         return UISwipeActionsConfiguration(actions: [deleteAction])
@@ -299,47 +344,62 @@ extension ViewController : UITableViewDelegate  , UITableViewDataSource {
         if(DaySection != nil ){
             return "\(String(describing: DaySection))"
         }
-        
         return ""
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        selectedButton.setTitle(dataSource[indexPath.row] as? String, for: .normal)
+             removeTransparentView()
+        print("Num: \(indexPath.row)")
+        print("Value: \(dataSource[indexPath.row])")
+        let SetdataModel =  DatabaseHelper.shared.getAllContacts()
+        var SumdataModelIncome: [Double] = []
+        for ForResultModelInCome in SetdataModel where ForResultModelInCome.expenses_text_hidden  != "รายจ่าย"  {
+            SumdataModelIncome.append(Double(ForResultModelInCome.expenses_Salary))
+        }
+        var SumdataModelExpensenc: [Double] = []
+        for ForResultModelExpen in SetdataModel where ForResultModelExpen.expenses_text_hidden  != "รายรับ" {
+            SumdataModelExpensenc.append(Double(ForResultModelExpen.expenses_Salary))
+        }
+        print(SetdataModel)
+        let SumTypelist = ["มกราคม" , "กุมภาพันธ์" , "มีนาคม" , "เมษายน" , "พฤษภาคม"  , "มิิถุนายน" , "กรกฏาคม" , "สิงหาคม" , "กันยายน" , "ตุลาคม" , "พฤศจิกายน" , "ธันวาคม"]
+//        let SumTypelist2 = ["ม.ค." , "ก.พ." , "มี.ค." , "เม.ย." , "พ.ค."  , "มิ.ย." , "ก.ค." , "ส.ค." , "ก.ย." , "ต.ค." , "พ.ย." , "ธ.ค"]
+//        let SumTypelist2 = ["ม.ค." , "ก.พ." ]
+//        let goals = [5, 3,3,7,5,6 ,9 , 8 ,9 ,2, 11, 1]
+//        let unitsBought = [3, 3,3,3,3,3 ,5 , 5 ,5 ,5, 5, 5]
         
+        var SetResultMonth: [String] = []
+        for CheckMonthArray in SetdataModel {
+            SetResultMonth.append(CheckMonthArray.expenses_SetMonth)
+        }
+      let CheckMonthArraySum = Array(Set(SetResultMonth).intersection(Set(SumTypelist)))
+         print(CheckMonthArraySum)
+      let liveAlbums = indexPath.row
+        switch liveAlbums {
+        case 0:
+            print("ดึงช้อมูลรายสัปหาด์")
+            setChart(dataPoints: CheckMonthArraySum, values: SumdataModelIncome.map{ Double($0)} , values2: SumdataModelExpensenc.map{ Double($0)})
+        case 1:
+            print("ดึงช้อมูลรายเดือน")
+            setChart(dataPoints: CheckMonthArraySum, values: SumdataModelIncome.map{ Double($0)} , values2: SumdataModelExpensenc.map{ Double($0)})
+        case 2:
+            print("ดึงข้อมูลรายปี")
+            setChart(dataPoints: CheckMonthArraySum, values: SumdataModelIncome.map{ Double($0)} , values2: SumdataModelExpensenc.map{ Double($0)})
+        default:
+            print("default ดึงช้อมูลรายเดือน")
+            setChart(dataPoints: CheckMonthArraySum, values: SumdataModelIncome.map{ Double($0)} , values2: SumdataModelExpensenc.map{ Double($0)})
+        }
+    }
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 50
+    }
+    
+    override func viewWillAppear(_ animated: Bool){
+//        self.TableView.reloadData()
+        self.PieChart.reloadInputViews()
     }
 
-    //        func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    
-    //
-    //            let MyCell = TableView.dequeueReusableCell(withIdentifier: "MyCell", for: indexPath ) as! MyTableViewCell
-    //            MyCell.type_header_label?.text = Model_data_Array[indexPath.row].expenses_Type
-    //            MyCell.time_label?.text = "เวลา"
-    //            MyCell.number_label?.text = String(Model_data_Array[indexPath.row].expenses_Salary)
-    //            MyCell.type_text_sta?.text = "จ่าย / รับ "
-    
-    //            let Cell = TableView.dequeueReusableCell(withIdentifier: "TableViewCell", for: indexPath) as! TableViewCell
-    //
-    //
-    
-    //            guard var cell = tableView.dequeueReusableCell(withIdentifier: "Cell") else{
-    //                return UITableViewCell()
-    //            }
-    
-    
-    //            let cell = tableView.dequeueReusableCell(withIdentifier: "TableViewCell", for: indexPath) as! TableViewCell
-    //            cell = UITableViewCell(style: .subtitle, reuseIdentifier: "Cell")
-    
-    //            cell.text_H_label?.text = Model_data_Array[indexPath.row].expenses_Type
-    //             cell.detailTextLabel?.text = Model_data_Array[indexPath.row].expenses_Description
-    
-    //            cell.input_number?.text = String(Model_data_Array[indexPath.row].expenses_Salary)
-    //            cell.type_Label?.text = "จ่าย / รับ "
-    //
-    //
-    //            Cell.layer.cornerRadius  =  15
-    //            Cell.layer.shadowColor = UIColor.gray.cgColor
-    //            Cell.layer.shadowRadius = 3.0
-    //            Cell.layer.shadowOpacity = 2.0
-    //            Cell.layer.shadowOffset = CGSize(width: 2, height: 4)
-    //            Cell.layer.masksToBounds = false
-    //           return MyCell
-    //       }
+   
     
 }
 

@@ -36,8 +36,7 @@ class SettingViewController: UIViewController , UITableViewDelegate , UITableVie
         label.textColor = .white
         label.font = UIFont(name: "Halvetica", size: 25)
         self.view.addSubview(label)
-
-    
+        
         let barHeight: CGFloat = UIApplication.shared.statusBarFrame.size.height
               let displayWidth: CGFloat = self.view.frame.width
               let displayHeight: CGFloat = self.view.frame.height
@@ -49,8 +48,6 @@ class SettingViewController: UIViewController , UITableViewDelegate , UITableVie
               self.view.addSubview(myTableView)
     }
    
-    
-  
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
           print("Num: \(indexPath.row)")
           print("Value: \(myArray[indexPath.row])")
@@ -71,20 +68,12 @@ class SettingViewController: UIViewController , UITableViewDelegate , UITableVie
         case 2:
             print("TypeList")
             let vcpass = ListTypeViewController()
-         
-               
                 self.myTableView.reloadData()
-         
-            
             vcpass.modalPresentationStyle = .overFullScreen
-         
             self.navigationController?.pushViewController( vcpass, animated:   true)
-         
         default:
             print("default")
-         
         }
-        
       }
 
       func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -95,12 +84,7 @@ class SettingViewController: UIViewController , UITableViewDelegate , UITableVie
           let cell = tableView.dequeueReusableCell(withIdentifier: "MyCell", for: indexPath as IndexPath)
           cell.textLabel!.text = "\(myArray[indexPath.row])"
           cell.accessoryType = .disclosureIndicator
-         
-         
           return cell
       }
-    
-    
-    
     
 }
