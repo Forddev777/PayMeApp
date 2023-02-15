@@ -1,45 +1,44 @@
-//
-//  ViewController.swift
-//  PayMeApp
-//
-//  Created by suriya taothongkom on 28/11/2565 BE.
-//
-
 import UIKit
 import StickyButton
 import RealmSwift
 import Charts
+import Fastis
+
 class CellClass: UITableViewCell {
-    
 }
 
 class ViewController: UIViewController , ChartViewDelegate {
     //    weak var axisFormatDelegate: IAxisValueFormatter?
     var Model_data_Array = [Model_data]()
-//    @IBOutlet weak var Label_ToDate: UILabel!
+    //    @IBOutlet weak var Label_ToDate: UILabel!
     let date = Date()
     let dateFormatter = DateFormatter()
     let TimeFormatter = DateFormatter()
     let numberFormatter = NumberFormatter()
-//    @IBOutlet weak var Label_Time: UILabel!
+    //    @IBOutlet weak var Label_Time: UILabel!
     
-    private let dataSource: NSArray = ["รายสัปดาห์","รายเดือน","รายปี"]
-    @IBOutlet weak var ButtonSelect: UIButton!
+    private let dataSource: NSArray = ["รายวัน","กำหนด"]
+    //    @IBOutlet weak var ButtonSelect: UIButton!
+    
     @IBOutlet weak var PieChart: BarChartView!
-    
+    @IBOutlet weak var BoundView: UIView!
+    @IBOutlet weak var buttonDate: UIButton!
+    @IBOutlet weak var Labeldaytext: UILabel!
+    @IBOutlet weak var ViewDayWeek: UIView!
     var selectedButton = UIButton()
-//    var dataSource = [String]()
+    //    var dataSource = [String]()
     let transparentView = UIView()
     let tableViewSelect = UITableView()
-    
-  
-    
+    lazy var currentDateLabel: UILabel = {
+        let label = UILabel()
+        return label
+    }()
+    @IBOutlet weak var segmentControlOutlet: UISegmentedControl!
     // test
     @IBOutlet weak var TableView: UITableView!
     // test
     @IBOutlet weak var View_Header: UIView!
     let MyCellId = "MyTableViewCell"
-    
     let MyCell2 = "TableViewCell2"
     //    @IBOutlet weak var Label_text: UILabel!
     var Activity_Header = [Date:[String]]()
@@ -49,8 +48,9 @@ class ViewController: UIViewController , ChartViewDelegate {
     @IBOutlet weak var Button_action: StickyButton!
     
 //    var PieChart = PieChartView()
-    @IBOutlet weak var SumIncomeLabel: UILabel!
-    @IBOutlet weak var SumExpenLabel: UILabel!
+//    @IBOutlet weak var SumIncomeLabel: UILabel!
+//    @IBOutlet weak var SumExpenLabel: UILabel!
+    
     let realm = try! Realm()
     var items: Results<Model_data>?
     var groupedItems = [Date:Results<Model_data>]()
@@ -60,12 +60,42 @@ class ViewController: UIViewController , ChartViewDelegate {
     var SectionDay:  String!
     var PKid: String = ""
     weak var playButton: UIButton!
-    
+    let SetdataModel =  DatabaseHelper.shared.getAllContacts()
    
+    var SelectVauleSinger: [String]! = []
+    var SumdataIncome_Salary: [Double] = []
+    var SumdataExpenses_Salary: [Double] = []
+    //    let SelectVauleSinger: [Date]
+//        var SumSetdataModelDate: [Date] = []
+//        var SumExpensesDescription: [String] = []
+//        var SumExpensesSetMonth: [String] = []
+//        var SumdataModelSalary: [Double] = []
+//        for ForResultSetdataModel in SetdataModel where ForResultSetdataModel.expenses_text_hidden  != "รายจ่าย"  {
+//            SumSetdataModelDate.append((ForResultSetdataModel.expenses_Date ?? Date() ))
+//            SumExpensesSetMonth.append(String(ForResultSetdataModel.expenses_SetMonth))
+//            SumExpensesDescription.append(String(ForResultSetdataModel.expenses_Description))
+//            SumdataModelSalary.append(Double(ForResultSetdataModel.expenses_Salary))
+//            print(SumSetdataModelDate)
+//             print(SumExpensesSetMonth)
+//             print(SumExpensesDescription)
+//             print(SumdataModelSalary)
+////
+//        }
+    let SumTypelist = ["มกราคม" , "กุมภาพันธ์" , "มีนาคม" , "เมษายน" , "พฤษภาคม"  , "มิิถุนายน" , "กรกฏาคม" , "สิงหาคม" , "กันยายน" , "ตุลาคม" , "พฤศจิกายน" , "ธันวาคม"]
+//        let SumTypelist2 = ["ม.ค." , "ก.พ." , "มี.ค." , "เม.ย." , "พ.ค."  , "มิ.ย." , "ก.ค." , "ส.ค." , "ก.ย." , "ต.ค." , "พ.ย." , "ธ.ค"]
+//        let SumTypelist2 = ["ม.ค." , "ก.พ." ]
+    let goals = [5.0, 3.0,3.0,7.0,5.0,6.0 ,9.0 , 8.0 ,9.0 ,2.0, 11.0, 1.0]
+    let goalstest = [5.0]
+//        let unitsBought = [3, 3,3,3,3,3 ,5 , 5 ,5 ,5, 5, 5]
+  
+
+  
+         
     
     override func viewDidLoad() {
+    
         configuration()
-        SumLabel()
+//        SumLabel()
         super.viewDidLoad()
         TableView.register(UINib.init(nibName: MyCellId  , bundle: nil), forCellReuseIdentifier: "DefaultCell")
         tableViewSelect.register(UINib.init(nibName: MyCell2  , bundle: nil), forCellReuseIdentifier: "DefaultCell")
@@ -74,21 +104,6 @@ class ViewController: UIViewController , ChartViewDelegate {
         dateFormatter.dateFormat = "dd MMMM yyyy"
         TimeFormatter.dateFormat = "HH:mm"
         dateFormatter.locale = Locale(identifier: "th")
-       
-        
-//        Label_ToDate.text = "\u{00a0}\u{00a0}\(dateFormatter.string(from: date))\u{00a0}\u{00a0}"
-//        Label_ToDate.layer.shadowColor = UIColor.gray.cgColor
-//        Label_ToDate.layer.shadowRadius = 3.0
-//        Label_ToDate.layer.shadowOpacity = 2.0
-//        Label_ToDate.layer.shadowOffset = CGSize(width: 1, height: 4)
-//        Label_ToDate.layer.masksToBounds = false
-        
-//        Label_Time.text = "\(TimeFormatter.string(from: date))"
-//        Label_Time.layer.shadowColor = UIColor.gray.cgColor
-//        Label_Time.layer.shadowRadius = 3.0
-//        Label_Time.layer.shadowOpacity = 2.0
-//        Label_Time.layer.shadowOffset = CGSize(width: 1, height: 4)
-//        Label_Time.layer.masksToBounds = false
         Button_action.addItem(title: "เพิ่มรายรับ", icon: UIImage(systemName: "dollarsign.circle" )){
             item in
             self.present(self.AddINView(forType: "Home"), animated: true, completion: nil)
@@ -101,56 +116,258 @@ class ViewController: UIViewController , ChartViewDelegate {
             item in
             self.present(self.SettingNewViewController(forType: "SettingNewViewController"), animated: true, completion: nil)
         }
-        // pull to refesh in ios swift //
-        //        TableView.refreshControl = UIRefreshControl()
-        //        TableView.refreshControl?.addTarget(self, action: #selector(configuration), for: .valueChanged)
-    }
-    func addTransparentView(frames: CGRect) {
-           let window = UIApplication.shared.keyWindow
-           transparentView.frame = window?.frame ?? self.view.frame
-           self.view.addSubview(transparentView)
-           
-        tableViewSelect.frame = CGRect(x: frames.origin.x, y: frames.origin.y + frames.height , width: frames.width , height: 0)
-           self.view.addSubview(tableViewSelect)
-        tableViewSelect.layer.cornerRadius = 5
-           
-           transparentView.backgroundColor = UIColor.black.withAlphaComponent(0.9)
-        tableViewSelect.reloadData()
-           let tapgesture = UITapGestureRecognizer(target: self, action: #selector(removeTransparentView))
-           transparentView.addGestureRecognizer(tapgesture)
-           transparentView.alpha = 0
-           UIView.animate(withDuration: 0.4, delay: 0.0, usingSpringWithDamping: 1.0, initialSpringVelocity: 1.0, options: .curveEaseInOut, animations: {
-               self.transparentView.alpha = 0.5
-               self.tableViewSelect.frame = CGRect(x: frames.origin.x + 40, y: frames.origin.y + 40  + frames.height, width: frames.width + 100  , height: CGFloat(self.dataSource.count * 50))
-           }, completion: nil)
-       }
-    
-    @IBAction func onClickSelectType(_ sender: Any) {
-                selectedButton = ButtonSelect
-                addTransparentView(frames: ButtonSelect.frame)
+//        setChart(dataPoints: CheckMonthArraySum, values: SumdataModelIncome.map{ Double($0)} , values2: SumdataModelExpensenc.map{ Double($0)})
     }
     
-    @objc func removeTransparentView() {
-            let frames = selectedButton.frame
-            UIView.animate(withDuration: 0.4, delay: 0.0, usingSpringWithDamping: 1.0, initialSpringVelocity: 1.0, options: .curveEaseInOut, animations: {
-                self.transparentView.alpha = 0
-                self.tableViewSelect.frame = CGRect(x: frames.origin.x, y: frames.origin.y + frames.height, width: frames.width, height: 0)
-            }, completion: nil)
+    
+    var currentValue: FastisValue? {
+        didSet {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
+            formatter.timeZone = TimeZone(abbreviation: "THA")
+//            formatter.timeZone = TimeZone(abbreviation: "GMT+7:00")
+//            formatter.locale = Locale(identifier: "th_TH")
+            if let rangeValue = self.currentValue as? FastisRange {
+                self.currentDateLabel.text = formatter.string(from: rangeValue.fromDate)
+                Labeldaytext.text  =  self.currentDateLabel.text
+            } else if let dateValue = self.currentValue as? Date {
+                self.currentDateLabel.text  = formatter.string(from: dateValue  )
+                self.Labeldaytext.text  =  self.currentDateLabel.text
+            } else {
+                self.currentDateLabel.text = "Choose a date"
+            }
         }
+    }
+    func chooseDate() {
+      
+//      let CheckMonthArraySum = Array(Set(SetResultMonth).intersection(Set(SumTypelist)))
+//        var SumdataModelIncome: [Double] = []
+//        for ForResultModelInCome in SetdataModel where ForResultModelInCome.expenses_text_hidden  != "รายจ่าย" && ForResultModelInCome.expenses_Date ==                                                             dateFormatter.date(from: "2023-02-01 04:50:00 +0000"){
+//            SumdataModelIncome.append(Double(ForResultModelInCome.expenses_Salary))
+//        }
+//        print(SumdataModelIncome)
+//        var SetResultSingerValueDate: [String] = []
+//        for CheckSingerVauleDateArray in SetdataModel where CheckSingerVauleDateArray.expenses_text_hidden  != "รายจ่าย"
+//        && CheckSingerVauleDateArray.expenses_Date == self.SelectVauleSinger {
+//            SetResultSingerValueDate.append(CheckSingerVauleDateArray.expenses_Date!)
+//            print(" \(SetResultSingerValueDate) ")
+//        }
+        
+        let fastisController = FastisController(mode: .single)
+        fastisController.maximumDate = Date()
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMMM"
+        formatter.timeZone = TimeZone(abbreviation: "THA")
+        let formatter2 = DateFormatter()
+        formatter2.dateFormat = "d MMMM yyyy"
+        formatter2.timeZone = TimeZone(abbreviation: "THA")
+        let formatter3 = DateFormatter()
+        formatter3.dateFormat = "yyyy-MM-dd"
+        formatter3.timeZone = TimeZone(abbreviation: "THA")
+        
+//        var dateselect: [String] = []
+        
+//
+//        for ForResultExpenses_Salary in SetdataModel where ForResultExpenses_Salary.expenses_text_hidden  != "รายจ่าย" &&
+////                                                            dateFormatter.formatter3(ForResultExpenses_Salary.expenses_Date) ==  dateFormatter.string(from: dateselect)
+//        {
+//            SumdataExpenses_Salary.append(Double(ForResultExpenses_Salary.expenses_Salary))
+//        }
+        
+       
+        
+        fastisController.doneHandler = { dateValue in
+             var montSigerValue =   formatter.string(from: dateValue! )
+            self.Labeldaytext.text =  formatter2.string(from: dateValue! )
+            var dateselect   = formatter3.string(from: dateValue! )
+            self.SelectVauleSinger.append(String(montSigerValue))
+//            for ForReSultIncomeSalary in self.SetdataModel
+//            where
+//
+//            formatter3.string(from:ForReSultIncomeSalary.expenses_Date!) == dateselect{
+//
+//               SumdataExpenses_Salary.append(Double(ForReSultIncomeSalary.expenses_Salary))
+//            }
+            
+          
+            for ForReSultIncomeSalary in  self.SetdataModel  where  ForReSultIncomeSalary.expenses_text_hidden != "รายจ่าย"  {
+                if (formatter3.string(from:ForReSultIncomeSalary.expenses_Date!) == dateselect ) {
+                    
+                    self.SumdataIncome_Salary.append(Double(ForReSultIncomeSalary.expenses_Salary))
+                   print("true")
+                }else{
+                    self.SumdataIncome_Salary.append(Double(0.0))
+                    print("false")
+                  
+                }
+            }
+            
+            for ForReSultExpensesSalary in  self.SetdataModel  where  ForReSultExpensesSalary.expenses_text_hidden != "รายรับ"  {
+                if (formatter3.string(from:ForReSultExpensesSalary.expenses_Date!) == dateselect ) {
+                    
+                    self.SumdataExpenses_Salary.append(Double(ForReSultExpensesSalary.expenses_Salary))
+                   print("true")
+                }else{
+                    self.SumdataExpenses_Salary.append(Double(0.0))
+                    print("false")
+                  
+                }
+            }
+            
+            
+            
+//            print(self.SetdataModel)
+            print(self.SumdataIncome_Salary)
+            print(self.SumdataExpenses_Salary)
+            
+            print(dateselect)
+            self.setChart(dataPoints: self.SelectVauleSinger , values: (self.SumdataIncome_Salary) , valuesExSalary: self.SumdataExpenses_Salary  )
+//            print(self.SelectVauleSinger)
+//            print(self.goalstest)
+        }
+        fastisController.present(above: self)
+       
+    }
+    func chooseRange() {
+        let fastisController = FastisController(mode: .range)
+        fastisController.minimumDate = Calendar.current.date(byAdding: .month, value: -3, to: Date())
+        fastisController.maximumDate = Calendar.current.date(byAdding: .month , value: 0, to: Date())
+        fastisController.doneHandler = { newDate in
+            self.currentValue = newDate
+        }
+        fastisController.present(above: self)
+    }
+    @IBAction func segmentControllClick(_ sender: Any) {
+        switch segmentControlOutlet.selectedSegmentIndex {
+                case 0:
+                    BoundView.backgroundColor = .gray
+                    PieChart.layer.cornerRadius = 15
+                    ViewDayWeek.layer.cornerRadius = 15
+                    print("sec0")
+            
+                case 1 :
+                    BoundView.backgroundColor = .cyan
+                    PieChart.layer.cornerRadius = 15
+                    ViewDayWeek.layer.cornerRadius = 15
+                    print("sec1")
+                default:
+                    break
+                }
+    }
+    
+    @IBAction func ActBtnDate(_ sender: Any) {
+        if(segmentControlOutlet.selectedSegmentIndex == 0 ){
+            chooseDate()
+        
+//            setChart(dataPoints: SetResultMonth, values: goals )
+            
+        //        var SumdataModelExpensenc: [Double] = []
+        //        for ForResultModelExpen in SetdataModel
+        //                                where ForResultModelExpen.expenses_text_hidden  != "รายรับ"
+        //                                && ForResultModelExpen.expenses_Date ==  dateFormatter.date(from: "2023-02-01 04:50:00 +0000")
+        //        {
+        //
+        //            SumdataModelExpensenc.append(Double(ForResultModelExpen.expenses_Salary))
+        //        }
+        //        print(SumdataModelExpensenc)
+            
+            
+        }else{
+            chooseRange()
+        }
+        
+//        let datePicker = UIDatePicker()
+//        datePicker.datePickerMode = .date
+//        let alertController = UIAlertController(title:  "",
+//                                      message: "",
+//                                      preferredStyle: .actionSheet)
+//
+//        if #available(iOS 14.0, *) {
+//            datePicker.preferredDatePickerStyle = .wheels
+//            } else {
+//                // Fallback on earlier versions
+//            }
+//
+//        let selcteAction = UIAlertAction(title: "เลือก", style: .default, handler: { (_) in
+//                 print("You've pressed default")
+//             })
+//
+//        alertController.addAction(selcteAction)
+//        alertController.addAction(UIAlertAction(title: "สัปดาห์นี้", style: .destructive, handler: { (_) in
+//                 print("You've pressed cancel")
+//             }))
+//
+//        alertController.addAction(UIAlertAction(title: "Destructive", style: .destructive, handler: { (_) in
+//                 print("You've pressed the destructive")
+//             }))
+//
+//        let vc = UIViewController()
+//        vc.view = datePicker
+//
+//        alertController.setValue(vc, forKey: "contentViewController")
+//
+//        self.present(alertController, animated: true , completion: nil)
+    }
+    
+//        if (sender.selectedSegmentIndex == 0) {
+//            BoundView.backgroundColor = .gray
+//            PieChart.layer.cornerRadius = 15
+//            ViewDayWeek.layer.cornerRadius = 15
+//            print("sec1")
+//
+//        }else {
+//            BoundView.backgroundColor = .cyan
+//            PieChart.layer.cornerRadius = 15
+//            ViewDayWeek.layer.cornerRadius = 15
+//
+//            print("sec2")
+//        }
+//    func addTransparentView(frames: CGRect) {
+//           let window = UIApplication.shared.keyWindow
+//           transparentView.frame = window?.frame ?? self.view.frame
+//           self.view.addSubview(transparentView)
+//
+//        tableViewSelect.frame = CGRect(x: frames.origin.x, y: frames.origin.y + frames.height , width: frames.width , height: 0)
+//           self.view.addSubview(tableViewSelect)
+//        tableViewSelect.layer.cornerRadius = 5
+//
+//           transparentView.backgroundColor = UIColor.black.withAlphaComponent(0.9)
+//        tableViewSelect.reloadData()
+//           let tapgesture = UITapGestureRecognizer(target: self, action: #selector(removeTransparentView))
+//           transparentView.addGestureRecognizer(tapgesture)
+//           transparentView.alpha = 0
+//           UIView.animate(withDuration: 0.4, delay: 0.0, usingSpringWithDamping: 1.0, initialSpringVelocity: 1.0, options: .curveEaseInOut, animations: {
+//               self.transparentView.alpha = 0.5
+//               self.tableViewSelect.frame = CGRect(x: frames.origin.x + 40, y: frames.origin.y + 40  + frames.height, width: frames.width + 100  , height: CGFloat(self.dataSource.count * 50))
+//           }, completion: nil)
+//       }
+    
+//    @IBAction func onClickSelectType(_ sender: Any) {
+//                selectedButton = ButtonSelect
+//                addTransparentView(frames: ButtonSelect.frame)
+//    }
+    
+//    @objc func removeTransparentView() {
+//            let frames = selectedButton.frame
+//            UIView.animate(withDuration: 0.4, delay: 0.0, usingSpringWithDamping: 1.0, initialSpringVelocity: 1.0, options: .curveEaseInOut, animations: {
+//                self.transparentView.alpha = 0
+//                self.tableViewSelect.frame = CGRect(x: frames.origin.x, y: frames.origin.y + frames.height, width: frames.width, height: 0)
+//            }, completion: nil)
+//        }
     func SortDay(){
         let items = DatabaseHelper.shared.getAllContacts()
         itemDates = items.reduce(into: [Date](), { results, currentItem in
             let date = currentItem.expenses_Date!
             let beginningOfDay = Calendar.current.date(from: DateComponents(year: Calendar.current.component(.year, from: date), month:                  Calendar.current.component(.month, from: date), day: Calendar.current.component(.day, from: date), hour: 0, minute: 0, second: 0))!
             let endOfDay = Calendar.current.date(from: DateComponents(year: Calendar.current.component(.year, from: date), month: Calendar.current.component(.month, from: date), day: Calendar.current.component(.day, from: date), hour: 23, minute: 59, second: 59))!
-            //Only add the date if it doesn't exist in the array yet
+            
             if !results.contains(where: { addedDate->Bool in
                 return addedDate >= beginningOfDay && addedDate <= endOfDay
             }) {
                 results.append(beginningOfDay)
             }
         })
-        //Filter each Item in realm based on their date property and assign the results to the dictionary
+       
         groupedItems = itemDates.reduce(into: [Date:Results<Model_data>](),
                                         { results, date in
             let beginningOfDay = Calendar.current.date(from: DateComponents(year: Calendar.current.component(.year, from: date), month:                                          Calendar.current.component(.month, from: date), day: Calendar.current.component(.day, from: date), hour: 0, minute: 0, second: 0))!
@@ -158,20 +375,20 @@ class ViewController: UIViewController , ChartViewDelegate {
             results[beginningOfDay] = realm.objects(Model_data.self).filter("expenses_Date >= %@ AND expenses_Date <= %@", beginningOfDay, endOfDay)
         })
     }
-    func SumLabel() {
-        let getdataIncome =  DatabaseHelper.shared.getAllContacts()
-        let getdataExpen = DatabaseHelper.shared.getAllContacts()
-        var SumIncome:Int = 0
-        var SumExpense:Int = 0
-        for ForResultIncome in getdataIncome where ForResultIncome.expenses_text_hidden  != "รายจ่าย"{
-            SumIncome += ForResultIncome.expenses_Salary
-        }
-        for  ForResultExpense  in getdataExpen where ForResultExpense.expenses_text_hidden != "รายรับ" {
-            SumExpense += ForResultExpense.expenses_Salary
-        }
-        SumIncomeLabel.text! = String(SumIncome)
-        SumExpenLabel.text! = String(SumExpense)
-    }
+//    func SumLabel() {
+//        let getdataIncome =  DatabaseHelper.shared.getAllContacts()
+//        let getdataExpen = DatabaseHelper.shared.getAllContacts()
+//        var SumIncome:Int = 0
+//        var SumExpense:Int = 0
+//        for ForResultIncome in getdataIncome where ForResultIncome.expenses_text_hidden  != "รายจ่าย"{
+//            SumIncome += ForResultIncome.expenses_Salary
+//        }
+//        for  ForResultExpense  in getdataExpen where ForResultExpense.expenses_text_hidden != "รายรับ" {
+//            SumExpense += ForResultExpense.expenses_Salary
+//        }
+//        SumIncomeLabel.text! = String(SumIncome)
+//        SumExpenLabel.text! = String(SumExpense)
+//    }
     @objc func configuration(){
         TableView.delegate = self
         TableView.dataSource = self
@@ -182,15 +399,18 @@ class ViewController: UIViewController , ChartViewDelegate {
         self.TableView.reloadData()
         self.SortDay()
         TableView.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
-//        tableView.register(UINib.init(nibName: CellClass  , bundle: nil), forCellReuseIdentifier: "Cell")
         tableViewSelect.register(UITableViewCell.self, forCellReuseIdentifier: "DefaultCell")
+        
+        
+       
+         
     }
     private func AddINView(forType type: String) -> UIViewController {
         let vc = AddINViewController()
         vc.callbackSuccess = {
             self.Model_data_Array = DatabaseHelper.shared.getAllContacts()
             self.SortDay()
-            self.SumLabel()
+//            self.SumLabel()
             self.TableView.reloadData()
         }
         vc.modalPresentationStyle = .pageSheet
@@ -202,7 +422,7 @@ class ViewController: UIViewController , ChartViewDelegate {
         vcEX.callbackSuccess = {
             self.Model_data_Array = DatabaseHelper.shared.getAllContacts()
             self.SortDay()
-            self.SumLabel()
+//            self.SumLabel()
             self.TableView.reloadData()
           
         }
@@ -220,16 +440,13 @@ class ViewController: UIViewController , ChartViewDelegate {
          NavigationController.pushViewController(settingview, animated: true)
         return NavigationController
     }
-       func setChart(dataPoints: [String],  values:[Double] , values2: [Double] ) {
+    func setChart(dataPoints: [String],  values:[Double]  , valuesExSalary: [Double] ) {
         var dataEntries: [BarChartDataEntry] = []
         var dataEntries1: [BarChartDataEntry] = []
         for i in 0..<dataPoints.count {
-            
-            let dataEntry =  BarChartDataEntry(x: Double(i), y:Double(values[i] ?? 0.0 ))
+            let dataEntry =  BarChartDataEntry(x: Double(i), y:Double(values[i]))
                 dataEntries.append(dataEntry)
-            print(values[i])
-            
-            let dataEntry1 = BarChartDataEntry(x: Double(i) , y: Double(values2[i]) ?? 0.0  )
+            let dataEntry1 = BarChartDataEntry(x: Double(i) , y: Double(valuesExSalary[i]))
                 dataEntries1.append(dataEntry1)
         }
            let groupSpace = 0.54
@@ -238,6 +455,7 @@ class ViewController: UIViewController , ChartViewDelegate {
            let chartDataSet = BarChartDataSet(entries: dataEntries, label: "รายรับ")
            let chartDataSet1 = BarChartDataSet(entries: dataEntries1, label: "รายจ่าย")
            let dataSets: [BarChartDataSet] = [chartDataSet,chartDataSet1]
+//           let dataSets: [BarChartDataSet] = [chartDataSet]
                chartDataSet.colors = [UIColor(red: 230/255, green: 126/255, blue: 34/255, alpha: 1)]
            let chartData = BarChartData(dataSets: dataSets)
            chartData.barWidth = barWidth
@@ -250,21 +468,19 @@ class ViewController: UIViewController , ChartViewDelegate {
                x_Axis.valueFormatter = IndexAxisValueFormatter(values:dataPoints)
                x_Axis.centerAxisLabelsEnabled = true
                x_Axis.granularity = 1
-           PieChart.xAxis.labelPosition = .bottom
-           PieChart.xAxis.granularityEnabled = true
-           PieChart.xAxis.drawGridLinesEnabled = false
-           PieChart.xAxis.drawAxisLineEnabled = false
-           PieChart.xAxis.labelPosition = .bottom
-//           PieChart.xAxis.labelCount = 30
-           PieChart.xAxis.labelCount = dataPoints.count
-           
-           PieChart.xAxis.granularity = 1
+          PieChart.xAxis.labelPosition = .bottom
+          PieChart.xAxis.granularityEnabled = true
+          PieChart.xAxis.drawGridLinesEnabled = false
+         PieChart.xAxis.drawAxisLineEnabled = false
+         PieChart.xAxis.labelPosition = .bottom
+         PieChart.xAxis.labelCount = dataPoints.count
+          PieChart.xAxis.granularity = 1
            PieChart.leftAxis.enabled = true
+//           PieChart.xAxis.labelCount = 30
 //           PieChart.xAxis.valueFormatter = IndexAxisValueFormatter(values: dataPoints)
 //        PieChart.data = chartData
 //        PieChart.center = view.center
-          PieChart.backgroundColor = .clear
-        PieChart.animate(xAxisDuration: 1.0, yAxisDuration: 1.0)
+         PieChart.animate(xAxisDuration: 1.0, yAxisDuration: 1.0)
     }
 }
 extension ViewController : UITableViewDelegate  , UITableViewDataSource {
@@ -348,47 +564,26 @@ extension ViewController : UITableViewDelegate  , UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        selectedButton.setTitle(dataSource[indexPath.row] as? String, for: .normal)
-             removeTransparentView()
+//        selectedButton.setTitle(dataSource[indexPath.row] as? String, for: .normal)
+//             removeTransparentView()
         print("Num: \(indexPath.row)")
         print("Value: \(dataSource[indexPath.row])")
-        let SetdataModel =  DatabaseHelper.shared.getAllContacts()
-        var SumdataModelIncome: [Double] = []
-        for ForResultModelInCome in SetdataModel where ForResultModelInCome.expenses_text_hidden  != "รายจ่าย"  {
-            SumdataModelIncome.append(Double(ForResultModelInCome.expenses_Salary))
-        }
-        var SumdataModelExpensenc: [Double] = []
-        for ForResultModelExpen in SetdataModel where ForResultModelExpen.expenses_text_hidden  != "รายรับ" {
-            SumdataModelExpensenc.append(Double(ForResultModelExpen.expenses_Salary))
-        }
-        print(SetdataModel)
-        let SumTypelist = ["มกราคม" , "กุมภาพันธ์" , "มีนาคม" , "เมษายน" , "พฤษภาคม"  , "มิิถุนายน" , "กรกฏาคม" , "สิงหาคม" , "กันยายน" , "ตุลาคม" , "พฤศจิกายน" , "ธันวาคม"]
-//        let SumTypelist2 = ["ม.ค." , "ก.พ." , "มี.ค." , "เม.ย." , "พ.ค."  , "มิ.ย." , "ก.ค." , "ส.ค." , "ก.ย." , "ต.ค." , "พ.ย." , "ธ.ค"]
-//        let SumTypelist2 = ["ม.ค." , "ก.พ." ]
-//        let goals = [5, 3,3,7,5,6 ,9 , 8 ,9 ,2, 11, 1]
-//        let unitsBought = [3, 3,3,3,3,3 ,5 , 5 ,5 ,5, 5, 5]
-        
-        var SetResultMonth: [String] = []
-        for CheckMonthArray in SetdataModel {
-            SetResultMonth.append(CheckMonthArray.expenses_SetMonth)
-        }
-      let CheckMonthArraySum = Array(Set(SetResultMonth).intersection(Set(SumTypelist)))
-         print(CheckMonthArraySum)
-      let liveAlbums = indexPath.row
-        switch liveAlbums {
-        case 0:
-            print("ดึงช้อมูลรายสัปหาด์")
-            setChart(dataPoints: CheckMonthArraySum, values: SumdataModelIncome.map{ Double($0)} , values2: SumdataModelExpensenc.map{ Double($0)})
-        case 1:
-            print("ดึงช้อมูลรายเดือน")
-            setChart(dataPoints: CheckMonthArraySum, values: SumdataModelIncome.map{ Double($0)} , values2: SumdataModelExpensenc.map{ Double($0)})
-        case 2:
-            print("ดึงข้อมูลรายปี")
-            setChart(dataPoints: CheckMonthArraySum, values: SumdataModelIncome.map{ Double($0)} , values2: SumdataModelExpensenc.map{ Double($0)})
-        default:
-            print("default ดึงช้อมูลรายเดือน")
-            setChart(dataPoints: CheckMonthArraySum, values: SumdataModelIncome.map{ Double($0)} , values2: SumdataModelExpensenc.map{ Double($0)})
-        }
+      
+//      let liveAlbums = indexPath.row
+//        switch liveAlbums {
+//        case 0:
+//            print("ดึงช้อมูลรายสัปหาด์")
+//            setChart(dataPoints: CheckMonthArraySum, values: SumdataModelIncome.map{ Double($0)} , values2: SumdataModelExpensenc.map{ Double($0)})
+//        case 1:
+//            print("ดึงช้อมูลรายเดือน")
+//            setChart(dataPoints: CheckMonthArraySum, values: SumdataModelIncome.map{ Double($0)} , values2: SumdataModelExpensenc.map{ Double($0)})
+//        case 2:
+//            print("ดึงข้อมูลรายปี")
+//            setChart(dataPoints: CheckMonthArraySum, values: SumdataModelIncome.map{ Double($0)} , values2: SumdataModelExpensenc.map{ Double($0)})
+//        default:
+//            print("default ดึงช้อมูลรายเดือน")
+//            setChart(dataPoints: CheckMonthArraySum, values: SumdataModelIncome.map{ Double($0)} , values2: SumdataModelExpensenc.map{ Double($0)})
+//        }
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 50
@@ -397,6 +592,7 @@ extension ViewController : UITableViewDelegate  , UITableViewDataSource {
     override func viewWillAppear(_ animated: Bool){
 //        self.TableView.reloadData()
         self.PieChart.reloadInputViews()
+        self.setChart(dataPoints: self.SelectVauleSinger , values: self.SumdataIncome_Salary   , valuesExSalary: self.SumdataExpenses_Salary   )
     }
 
    

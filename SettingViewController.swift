@@ -8,12 +8,10 @@
 import UIKit
 
 struct Catagoitems {
-    
     let title: String
     let items: [String]
     
 }
-
 class SettingViewController: UIViewController , UITableViewDelegate , UITableViewDataSource {
     private let myArray: NSArray = ["เพิ่มข้อมูลรายรับ","เพิ่มข้อมูลรายจ่าย","แก้ไขประเภทข้อมูล"]
     private var myTableView: UITableView!
@@ -21,12 +19,9 @@ class SettingViewController: UIViewController , UITableViewDelegate , UITableVie
     var Model_Setting_Array = [Model_Setting]()
     var callbackSuccess: (() -> ())?
     override func viewDidLoad() {
-       
         view.backgroundColor = .gray
         super.viewDidLoad()
 //        self.navigationController?.navigationBar.barTintColor = .blue
-       
-
         let label = UILabel(frame: CGRect(x: 0 ,
                                           y: 0.05 * self.view.frame.size.width,
                                           width: self.view.frame.size.width ,
