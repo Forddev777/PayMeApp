@@ -63,37 +63,18 @@ class ViewController: UIViewController , ChartViewDelegate {
     let SetdataModel =  DatabaseHelper.shared.getAllContacts()
    
     var SelectVauleSinger: [String]! = []
-    var SumdataIncome_Salary: [Double] = []
+    var SumdataIncome_Salary: [Double] =  []
     var SumdataExpenses_Salary: [Double] = []
-    //    let SelectVauleSinger: [Date]
-//        var SumSetdataModelDate: [Date] = []
-//        var SumExpensesDescription: [String] = []
-//        var SumExpensesSetMonth: [String] = []
-//        var SumdataModelSalary: [Double] = []
-//        for ForResultSetdataModel in SetdataModel where ForResultSetdataModel.expenses_text_hidden  != "รายจ่าย"  {
-//            SumSetdataModelDate.append((ForResultSetdataModel.expenses_Date ?? Date() ))
-//            SumExpensesSetMonth.append(String(ForResultSetdataModel.expenses_SetMonth))
-//            SumExpensesDescription.append(String(ForResultSetdataModel.expenses_Description))
-//            SumdataModelSalary.append(Double(ForResultSetdataModel.expenses_Salary))
-//            print(SumSetdataModelDate)
-//             print(SumExpensesSetMonth)
-//             print(SumExpensesDescription)
-//             print(SumdataModelSalary)
-////
-//        }
+    var callbackSuccess: (() -> ())?
     let SumTypelist = ["มกราคม" , "กุมภาพันธ์" , "มีนาคม" , "เมษายน" , "พฤษภาคม"  , "มิิถุนายน" , "กรกฏาคม" , "สิงหาคม" , "กันยายน" , "ตุลาคม" , "พฤศจิกายน" , "ธันวาคม"]
-//        let SumTypelist2 = ["ม.ค." , "ก.พ." , "มี.ค." , "เม.ย." , "พ.ค."  , "มิ.ย." , "ก.ค." , "ส.ค." , "ก.ย." , "ต.ค." , "พ.ย." , "ธ.ค"]
-//        let SumTypelist2 = ["ม.ค." , "ก.พ." ]
+    
+    let SelectVauleSingerMonth = ["กุมภาพันธ์"]
     let goals = [5.0, 3.0,3.0,7.0,5.0,6.0 ,9.0 , 8.0 ,9.0 ,2.0, 11.0, 1.0]
     let goalstest = [5.0]
+    var SumIncomeSalarycurrentDate: Int =  5000
+    var SumExpenseSalarycurrentDate: Int = 544
 //        let unitsBought = [3, 3,3,3,3,3 ,5 , 5 ,5 ,5, 5, 5]
-  
-
-  
-         
-    
     override func viewDidLoad() {
-    
         configuration()
 //        SumLabel()
         super.viewDidLoad()
@@ -117,9 +98,26 @@ class ViewController: UIViewController , ChartViewDelegate {
             self.present(self.SettingNewViewController(forType: "SettingNewViewController"), animated: true, completion: nil)
         }
 //        setChart(dataPoints: CheckMonthArraySum, values: SumdataModelIncome.map{ Double($0)} , values2: SumdataModelExpensenc.map{ Double($0)})
+        let formatter4 = DateFormatter()
+//        formatter4.dateFormat = "yyyy-MM-dd"
+        formatter4.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
+        formatter4.timeZone = TimeZone(abbreviation: "THA")
+//
+//        for ForReSultIncomeSalary in  self.SetdataModel  where ForReSultIncomeSalary.expenses_Date  ==  formatter4.date(from: "2023-02-17T05:19:20.000Z")   {
+//            SumIncomeSalarycurrentDate +=  ForReSultIncomeSalary.expenses_Salary
+//
+//        }
+//        for ForReSultExpensesSalary in  self.SetdataModel  where ForReSultExpensesSalary.expenses_Date  == formatter4.date(from: "2023-02-17T05:19:35.000Z") {
+//            SumExpenseSalarycurrentDate += ForReSultExpensesSalary.expenses_Salary
+//
+//        }
+        print(Date() )
+        print(SelectVauleSingerMonth)
+        print(SumIncomeSalarycurrentDate)
+        print(SumExpenseSalarycurrentDate)
+        print(self.SetdataModel)
+      
     }
-    
-    
     var currentValue: FastisValue? {
         didSet {
             let formatter = DateFormatter()
@@ -139,22 +137,6 @@ class ViewController: UIViewController , ChartViewDelegate {
         }
     }
     func chooseDate() {
-      
-//      let CheckMonthArraySum = Array(Set(SetResultMonth).intersection(Set(SumTypelist)))
-//        var SumdataModelIncome: [Double] = []
-//        for ForResultModelInCome in SetdataModel where ForResultModelInCome.expenses_text_hidden  != "รายจ่าย" && ForResultModelInCome.expenses_Date ==                                                             dateFormatter.date(from: "2023-02-01 04:50:00 +0000"){
-//            SumdataModelIncome.append(Double(ForResultModelInCome.expenses_Salary))
-//        }
-//        print(SumdataModelIncome)
-//        var SetResultSingerValueDate: [String] = []
-//        for CheckSingerVauleDateArray in SetdataModel where CheckSingerVauleDateArray.expenses_text_hidden  != "รายจ่าย"
-//        && CheckSingerVauleDateArray.expenses_Date == self.SelectVauleSinger {
-//            SetResultSingerValueDate.append(CheckSingerVauleDateArray.expenses_Date!)
-//            print(" \(SetResultSingerValueDate) ")
-//        }
-        
-        let fastisController = FastisController(mode: .single)
-        fastisController.maximumDate = Date()
         let formatter = DateFormatter()
         formatter.dateFormat = "MMMM"
         formatter.timeZone = TimeZone(abbreviation: "THA")
@@ -164,68 +146,41 @@ class ViewController: UIViewController , ChartViewDelegate {
         let formatter3 = DateFormatter()
         formatter3.dateFormat = "yyyy-MM-dd"
         formatter3.timeZone = TimeZone(abbreviation: "THA")
-        
-//        var dateselect: [String] = []
-        
-//
-//        for ForResultExpenses_Salary in SetdataModel where ForResultExpenses_Salary.expenses_text_hidden  != "รายจ่าย" &&
-////                                                            dateFormatter.formatter3(ForResultExpenses_Salary.expenses_Date) ==  dateFormatter.string(from: dateselect)
-//        {
-//            SumdataExpenses_Salary.append(Double(ForResultExpenses_Salary.expenses_Salary))
-//        }
-        
-       
-        
+        let fastisController = FastisController(mode: .single)
+        fastisController.maximumDate = Calendar.current.date(byAdding: .day, value: 0, to: Date())
         fastisController.doneHandler = { dateValue in
-             var montSigerValue =   formatter.string(from: dateValue! )
+        var montSigerValue =   formatter.string(from: dateValue! )
             self.Labeldaytext.text =  formatter2.string(from: dateValue! )
-            var dateselect   = formatter3.string(from: dateValue! )
+        var dateselect   = formatter3.string(from: dateValue! )
             self.SelectVauleSinger.append(String(montSigerValue))
-//            for ForReSultIncomeSalary in self.SetdataModel
-//            where
-//
-//            formatter3.string(from:ForReSultIncomeSalary.expenses_Date!) == dateselect{
-//
-//               SumdataExpenses_Salary.append(Double(ForReSultIncomeSalary.expenses_Salary))
-//            }
-            
-          
+            var SumIncomeSalarySingerVaule:Int = 0
+            var SumExpenseSalarySingerVaule:Int = 0
             for ForReSultIncomeSalary in  self.SetdataModel  where  ForReSultIncomeSalary.expenses_text_hidden != "รายจ่าย"  {
                 if (formatter3.string(from:ForReSultIncomeSalary.expenses_Date!) == dateselect ) {
-                    
-                    self.SumdataIncome_Salary.append(Double(ForReSultIncomeSalary.expenses_Salary))
-                   print("true")
-                }else{
-                    self.SumdataIncome_Salary.append(Double(0.0))
-                    print("false")
-                  
+                    SumIncomeSalarySingerVaule +=  ForReSultIncomeSalary.expenses_Salary
+//                    SumdataIncome_Salary.append(Double(ForReSultIncomeSalary.expenses_Salary)
                 }
             }
-            
             for ForReSultExpensesSalary in  self.SetdataModel  where  ForReSultExpensesSalary.expenses_text_hidden != "รายรับ"  {
                 if (formatter3.string(from:ForReSultExpensesSalary.expenses_Date!) == dateselect ) {
-                    
-                    self.SumdataExpenses_Salary.append(Double(ForReSultExpensesSalary.expenses_Salary))
+                   SumExpenseSalarySingerVaule += ForReSultExpensesSalary.expenses_Salary
+//                    self.SumdataExpenses_Salary.append(Double(ForReSultExpensesSalary.expenses_Salary))
                    print("true")
-                }else{
-                    self.SumdataExpenses_Salary.append(Double(0.0))
-                    print("false")
-                  
                 }
             }
-            
-            
-            
-//            print(self.SetdataModel)
-            print(self.SumdataIncome_Salary)
-            print(self.SumdataExpenses_Salary)
-            
+//            print([Double(SumIncomeSalarySingerVaule)])
+//            print(Double(SumExpenseSalarySingerVaule))
             print(dateselect)
-            self.setChart(dataPoints: self.SelectVauleSinger , values: (self.SumdataIncome_Salary) , valuesExSalary: self.SumdataExpenses_Salary  )
-//            print(self.SelectVauleSinger)
-//            print(self.goalstest)
+//            self.callbackSuccess = {
+            self.setChart(dataPoints: self.SelectVauleSinger , valuesInSalary: [Double(SumIncomeSalarySingerVaule)] ,
+                          valuesExSalary: [Double(SumExpenseSalarySingerVaule)] )
+                
+//            }
         }
-        fastisController.present(above: self)
+    
+      
+            fastisController.present(above: self)
+            
        
     }
     func chooseRange() {
@@ -258,102 +213,12 @@ class ViewController: UIViewController , ChartViewDelegate {
     @IBAction func ActBtnDate(_ sender: Any) {
         if(segmentControlOutlet.selectedSegmentIndex == 0 ){
             chooseDate()
-        
-//            setChart(dataPoints: SetResultMonth, values: goals )
-            
-        //        var SumdataModelExpensenc: [Double] = []
-        //        for ForResultModelExpen in SetdataModel
-        //                                where ForResultModelExpen.expenses_text_hidden  != "รายรับ"
-        //                                && ForResultModelExpen.expenses_Date ==  dateFormatter.date(from: "2023-02-01 04:50:00 +0000")
-        //        {
-        //
-        //            SumdataModelExpensenc.append(Double(ForResultModelExpen.expenses_Salary))
-        //        }
-        //        print(SumdataModelExpensenc)
-            
-            
+            print("aaa")
+           
         }else{
             chooseRange()
         }
-        
-//        let datePicker = UIDatePicker()
-//        datePicker.datePickerMode = .date
-//        let alertController = UIAlertController(title:  "",
-//                                      message: "",
-//                                      preferredStyle: .actionSheet)
-//
-//        if #available(iOS 14.0, *) {
-//            datePicker.preferredDatePickerStyle = .wheels
-//            } else {
-//                // Fallback on earlier versions
-//            }
-//
-//        let selcteAction = UIAlertAction(title: "เลือก", style: .default, handler: { (_) in
-//                 print("You've pressed default")
-//             })
-//
-//        alertController.addAction(selcteAction)
-//        alertController.addAction(UIAlertAction(title: "สัปดาห์นี้", style: .destructive, handler: { (_) in
-//                 print("You've pressed cancel")
-//             }))
-//
-//        alertController.addAction(UIAlertAction(title: "Destructive", style: .destructive, handler: { (_) in
-//                 print("You've pressed the destructive")
-//             }))
-//
-//        let vc = UIViewController()
-//        vc.view = datePicker
-//
-//        alertController.setValue(vc, forKey: "contentViewController")
-//
-//        self.present(alertController, animated: true , completion: nil)
     }
-    
-//        if (sender.selectedSegmentIndex == 0) {
-//            BoundView.backgroundColor = .gray
-//            PieChart.layer.cornerRadius = 15
-//            ViewDayWeek.layer.cornerRadius = 15
-//            print("sec1")
-//
-//        }else {
-//            BoundView.backgroundColor = .cyan
-//            PieChart.layer.cornerRadius = 15
-//            ViewDayWeek.layer.cornerRadius = 15
-//
-//            print("sec2")
-//        }
-//    func addTransparentView(frames: CGRect) {
-//           let window = UIApplication.shared.keyWindow
-//           transparentView.frame = window?.frame ?? self.view.frame
-//           self.view.addSubview(transparentView)
-//
-//        tableViewSelect.frame = CGRect(x: frames.origin.x, y: frames.origin.y + frames.height , width: frames.width , height: 0)
-//           self.view.addSubview(tableViewSelect)
-//        tableViewSelect.layer.cornerRadius = 5
-//
-//           transparentView.backgroundColor = UIColor.black.withAlphaComponent(0.9)
-//        tableViewSelect.reloadData()
-//           let tapgesture = UITapGestureRecognizer(target: self, action: #selector(removeTransparentView))
-//           transparentView.addGestureRecognizer(tapgesture)
-//           transparentView.alpha = 0
-//           UIView.animate(withDuration: 0.4, delay: 0.0, usingSpringWithDamping: 1.0, initialSpringVelocity: 1.0, options: .curveEaseInOut, animations: {
-//               self.transparentView.alpha = 0.5
-//               self.tableViewSelect.frame = CGRect(x: frames.origin.x + 40, y: frames.origin.y + 40  + frames.height, width: frames.width + 100  , height: CGFloat(self.dataSource.count * 50))
-//           }, completion: nil)
-//       }
-    
-//    @IBAction func onClickSelectType(_ sender: Any) {
-//                selectedButton = ButtonSelect
-//                addTransparentView(frames: ButtonSelect.frame)
-//    }
-    
-//    @objc func removeTransparentView() {
-//            let frames = selectedButton.frame
-//            UIView.animate(withDuration: 0.4, delay: 0.0, usingSpringWithDamping: 1.0, initialSpringVelocity: 1.0, options: .curveEaseInOut, animations: {
-//                self.transparentView.alpha = 0
-//                self.tableViewSelect.frame = CGRect(x: frames.origin.x, y: frames.origin.y + frames.height, width: frames.width, height: 0)
-//            }, completion: nil)
-//        }
     func SortDay(){
         let items = DatabaseHelper.shared.getAllContacts()
         itemDates = items.reduce(into: [Date](), { results, currentItem in
@@ -367,7 +232,6 @@ class ViewController: UIViewController , ChartViewDelegate {
                 results.append(beginningOfDay)
             }
         })
-       
         groupedItems = itemDates.reduce(into: [Date:Results<Model_data>](),
                                         { results, date in
             let beginningOfDay = Calendar.current.date(from: DateComponents(year: Calendar.current.component(.year, from: date), month:                                          Calendar.current.component(.month, from: date), day: Calendar.current.component(.day, from: date), hour: 0, minute: 0, second: 0))!
@@ -400,10 +264,7 @@ class ViewController: UIViewController , ChartViewDelegate {
         self.SortDay()
         TableView.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
         tableViewSelect.register(UITableViewCell.self, forCellReuseIdentifier: "DefaultCell")
-        
-        
-       
-         
+      
     }
     private func AddINView(forType type: String) -> UIViewController {
         let vc = AddINViewController()
@@ -440,14 +301,18 @@ class ViewController: UIViewController , ChartViewDelegate {
          NavigationController.pushViewController(settingview, animated: true)
         return NavigationController
     }
-    func setChart(dataPoints: [String],  values:[Double]  , valuesExSalary: [Double] ) {
+    func setChart(dataPoints: [String],  valuesInSalary:[Double]  , valuesExSalary: [Double] ) {
         var dataEntries: [BarChartDataEntry] = []
         var dataEntries1: [BarChartDataEntry] = []
+        
+//        var test = ["aa" , "ab" , "ac" , "ad" , "ae" ]
+//        var test2 = ["aa"]
+//        var valuesInSalary2 = [ 15000.0 ]
         for i in 0..<dataPoints.count {
-            let dataEntry =  BarChartDataEntry(x: Double(i), y:Double(values[i]))
+            let dataEntry =  BarChartDataEntry(x: Double(i), y:Double(valuesInSalary[i]))
                 dataEntries.append(dataEntry)
-            let dataEntry1 = BarChartDataEntry(x: Double(i) , y: Double(valuesExSalary[i]))
-                dataEntries1.append(dataEntry1)
+                let dataEntry1 = BarChartDataEntry(x: Double(i) , y: Double(valuesExSalary[i]))
+                    dataEntries1.append(dataEntry1)
         }
            let groupSpace = 0.54
            let barSpace = 0.03
@@ -461,7 +326,7 @@ class ViewController: UIViewController , ChartViewDelegate {
            chartData.barWidth = barWidth
            chartData.groupBars(fromX: Double(0), groupSpace: groupSpace, barSpace: barSpace)
            PieChart.xAxis.axisMinimum = Double(0)
-           PieChart.xAxis.axisMaximum = Double(0) + chartData.groupWidth(groupSpace: groupSpace, barSpace: barSpace) * Double(12)  // group count : 2
+           PieChart.xAxis.axisMaximum = Double(0) + chartData.groupWidth(groupSpace: groupSpace, barSpace: barSpace) * Double(1)  // group count : 1
            chartData.groupBars(fromX: Double(0), groupSpace: groupSpace, barSpace: barSpace)
            PieChart.data = chartData
            let x_Axis = PieChart.xAxis
@@ -469,23 +334,24 @@ class ViewController: UIViewController , ChartViewDelegate {
                x_Axis.centerAxisLabelsEnabled = true
                x_Axis.granularity = 1
           PieChart.xAxis.labelPosition = .bottom
-          PieChart.xAxis.granularityEnabled = true
-          PieChart.xAxis.drawGridLinesEnabled = false
+          PieChart.xAxis.granularityEnabled = true  //ความล่ะเอียด
+          PieChart.xAxis.drawGridLinesEnabled = false //วาดเส้น
          PieChart.xAxis.drawAxisLineEnabled = false
-         PieChart.xAxis.labelPosition = .bottom
          PieChart.xAxis.labelCount = dataPoints.count
           PieChart.xAxis.granularity = 1
-           PieChart.leftAxis.enabled = true
+//           PieChart.leftAxis.enabled = true
+       
 //           PieChart.xAxis.labelCount = 30
 //           PieChart.xAxis.valueFormatter = IndexAxisValueFormatter(values: dataPoints)
 //        PieChart.data = chartData
 //        PieChart.center = view.center
          PieChart.animate(xAxisDuration: 1.0, yAxisDuration: 1.0)
+        self.callbackSuccess?()
     }
 }
 extension ViewController : UITableViewDelegate  , UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
-        return   itemDates.count  // กลุ่มชุดข้อมูล
+        return   itemDates.count
     }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if( tableView ==  tableViewSelect ){
@@ -562,37 +428,18 @@ extension ViewController : UITableViewDelegate  , UITableViewDataSource {
         }
         return ""
     }
-    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        selectedButton.setTitle(dataSource[indexPath.row] as? String, for: .normal)
-//             removeTransparentView()
         print("Num: \(indexPath.row)")
         print("Value: \(dataSource[indexPath.row])")
-      
-//      let liveAlbums = indexPath.row
-//        switch liveAlbums {
-//        case 0:
-//            print("ดึงช้อมูลรายสัปหาด์")
-//            setChart(dataPoints: CheckMonthArraySum, values: SumdataModelIncome.map{ Double($0)} , values2: SumdataModelExpensenc.map{ Double($0)})
-//        case 1:
-//            print("ดึงช้อมูลรายเดือน")
-//            setChart(dataPoints: CheckMonthArraySum, values: SumdataModelIncome.map{ Double($0)} , values2: SumdataModelExpensenc.map{ Double($0)})
-//        case 2:
-//            print("ดึงข้อมูลรายปี")
-//            setChart(dataPoints: CheckMonthArraySum, values: SumdataModelIncome.map{ Double($0)} , values2: SumdataModelExpensenc.map{ Double($0)})
-//        default:
-//            print("default ดึงช้อมูลรายเดือน")
-//            setChart(dataPoints: CheckMonthArraySum, values: SumdataModelIncome.map{ Double($0)} , values2: SumdataModelExpensenc.map{ Double($0)})
-//        }
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 50
     }
-    
     override func viewWillAppear(_ animated: Bool){
-//        self.TableView.reloadData()
         self.PieChart.reloadInputViews()
-        self.setChart(dataPoints: self.SelectVauleSinger , values: self.SumdataIncome_Salary   , valuesExSalary: self.SumdataExpenses_Salary   )
+        self.setChart(dataPoints: SelectVauleSingerMonth,
+                      valuesInSalary: [Double(SumIncomeSalarycurrentDate)]
+                      ,valuesExSalary:  [Double(SumExpenseSalarycurrentDate)]   )
     }
 
    
