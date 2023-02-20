@@ -9,7 +9,6 @@ import UIKit
 import RealmSwift
 class AddINViewController: UIViewController , UITextFieldDelegate , UIPickerViewDelegate , UIPickerViewDataSource  {
   
-    
     var Model_data_Array = [Model_data]()
 //    var data_type_income: [String] = []
     var data_type_income: [Model_Setting] = []
@@ -29,7 +28,7 @@ class AddINViewController: UIViewController , UITextFieldDelegate , UIPickerView
     var text_Income = "รายรับ"
     let dateFormatter = DateFormatter()
     var callbackSuccess: (() -> ())?
-  
+   
     override func viewDidLoad() {
         data_type_income = DatabaseHelper.shared.getAllInTyper()
         super.viewDidLoad()
@@ -134,6 +133,7 @@ class AddINViewController: UIViewController , UITextFieldDelegate , UIPickerView
                                    expenses_SetMonth : v_IncomeSetMonth)
             self.Model_data_Array.append(model)
             DatabaseHelper.shared.saveContact(contact: model)
+           
             self.callbackSuccess?()
             self.dismiss(animated: true, completion: nil)
             
