@@ -1,14 +1,10 @@
 //
 //  SettingExpensesdetailViewController.swift
 //  PayMeApp
-//
 //  Created by suriya taothongkom on 13/1/2566 BE.
 //
-
 import UIKit
-
 class SettingExpensesdetailViewController: UIViewController , UITextFieldDelegate , UIPickerViewDelegate , UIPickerViewDataSource  {
-
     var Model_data_Array = [Model_Setting]()
     var text_fixld_type: UITextField?
     var data_type: [String] = []
@@ -22,7 +18,6 @@ class SettingExpensesdetailViewController: UIViewController , UITextFieldDelegat
         view.backgroundColor = UIColor(red: 1.00, green: 0.26, blue: 0.26, alpha: 1.00)
         navigationItem.title = "ตั้งค่ารายจ่าย"
         data_type = ["รายรับ", "รายจ่าย"]
-       
         text_fixld_type = UITextField.init(frame:(CGRect(x: 15,
                                                                 y: self.view.frame.size.height * 0.1,
                                                                 width: self.view.frame.size.width * 0.90 ,
@@ -37,7 +32,6 @@ class SettingExpensesdetailViewController: UIViewController , UITextFieldDelegat
 //        viewPicker.dataSource = self
 //        viewPicker.delegate = self
         self.view.addSubview(text_fixld_type!)
-        
         text_fixld_detail = UITextField.init(frame:
                                             (CGRect(x: 15,
                                                     y: self.view.frame.size.height * 0.26,
@@ -51,7 +45,6 @@ class SettingExpensesdetailViewController: UIViewController , UITextFieldDelegat
         text_fixld_detail?.keyboardType = .default
         text_fixld_detail?.delegate = self
         self.view.addSubview(text_fixld_detail!)
-        
         Button_Save_Data = UIButton.init(frame: CGRect(x: 15,
                                                        y: self.view.frame.size.height * 0.58  ,
                                                        width: self.view.frame.size.width * 0.90 ,
@@ -61,11 +54,11 @@ class SettingExpensesdetailViewController: UIViewController , UITextFieldDelegat
         Button_Save_Data?.titleLabel?.textAlignment  = .center
         Button_Save_Data?.addTarget(self, action: #selector(save_setting(_:)), for: .touchUpInside)
         self.view.addSubview(Button_Save_Data!)
-        // Do any additional setup after loading the view.
+    
+        
     }
     
     @IBAction func save_setting(_ sender: UIButton){
-        
         if(text_fixld_type?.text != "" && text_fixld_detail?.text != ""  ){
             let set_data_type = text_fixld_type?.text!
             let set_data_detail = text_fixld_detail?.text!
@@ -74,16 +67,13 @@ class SettingExpensesdetailViewController: UIViewController , UITextFieldDelegat
             self.Model_data_Array.append(model_seting)
             DatabaseHelper.shared.saveSetting(contact: model_seting)
             self.dismiss(animated: true, completion: nil)
-            
         }else{
             let alert = UIAlertController(title: "ระบุค่าไม่ครบ", message: "ลองใหม่อีกครั้ง", preferredStyle: UIAlertController.Style.alert)
             alert.addAction(UIAlertAction(title: "ตกลง", style: UIAlertAction.Style.default , handler: nil))
             self.present(alert, animated: true , completion: nil)
-            
         }
-        
     }
-                                    
+                                
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return  1
     }
@@ -95,21 +85,8 @@ class SettingExpensesdetailViewController: UIViewController , UITextFieldDelegat
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         data_type[row]
        }
-
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         text_fixld_type!.text = data_type[row]
-
     }
-
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
+    
 }

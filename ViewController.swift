@@ -4,7 +4,7 @@ import RealmSwift
 import Charts
 import Fastis
 class ViewController: UIViewController , ChartViewDelegate {
-    var Model_data_Array = [Model_data]()
+    var Model_data_Array =  [Model_data]()
     //    @IBOutlet weak var Label_ToDate: UILabel!
     let date = Date()
     let dateFormatter = DateFormatter()
@@ -54,9 +54,17 @@ class ViewController: UIViewController , ChartViewDelegate {
     var SumdataExpenses_Salary: [Double] = []
     var callbackSuccess: (() -> ())?
     let SumTypelist = ["มกราคม" , "กุมภาพันธ์" , "มีนาคม" , "เมษายน" , "พฤษภาคม"  , "มิิถุนายน" , "กรกฏาคม" , "สิงหาคม" , "กันยายน" , "ตุลาคม" , "พฤศจิกายน" , "ธันวาคม"]
+    
+    var CurrenArray: [String] = []
+    
+    let formatter3 = DateFormatter()
+
+    var item:Model_data?
+    
     override func viewDidLoad() {
         configuration()
 //        SumLabel()
+//        print("testtest \(self.ModeldataArrayToDate)")
         super.viewDidLoad()
         TableView.register(UINib.init(nibName: MyCellId  , bundle: nil), forCellReuseIdentifier: "DefaultCell")
         tableViewSelect.register(UINib.init(nibName: MyCell2  , bundle: nil), forCellReuseIdentifier: "DefaultCell")
@@ -101,26 +109,23 @@ class ViewController: UIViewController , ChartViewDelegate {
         let formatter2 = DateFormatter()
         formatter2.dateFormat = "d MMMM yyyy"
         formatter2.timeZone = TimeZone(abbreviation: "THA")
-        let formatter3 = DateFormatter()
-        formatter3.dateFormat = "yyyy-MM-dd"
-        formatter3.timeZone = TimeZone(abbreviation: "THA")
         let fastisController = FastisController(mode: .single)
         fastisController.initialValue = Date()
         fastisController.maximumDate = Calendar.current.date(byAdding: .day, value: 0, to: Date())
         fastisController.doneHandler = { dateValue in
         let montSigerValue =   formatter.string(from: dateValue! )
         self.Labeldaytext.text =  formatter2.string(from: dateValue! )
-        let dateselect   = formatter3.string(from: dateValue! )
+            let dateselect   = self.formatter3.string(from: dateValue! )
         self.SelectVauleSinger.append(String(montSigerValue))
         var SumIncomeSalarySingerVaule:Int = 0
         var SumExpenseSalarySingerVaule:Int = 0
             for ForReSultIncomeSalary in  self.SetdataModel  where  ForReSultIncomeSalary.expenses_text_hidden != "รายจ่าย"  {
-                if (formatter3.string(from:ForReSultIncomeSalary.expenses_Date!) == dateselect ) {
+                if (self.formatter3.string(from:ForReSultIncomeSalary.expenses_Date!) == dateselect ) {
                     SumIncomeSalarySingerVaule +=  ForReSultIncomeSalary.expenses_Salary
                 }
             }
             for ForReSultExpensesSalary in  self.SetdataModel  where  ForReSultExpensesSalary.expenses_text_hidden != "รายรับ"  {
-                if (formatter3.string(from:ForReSultExpensesSalary.expenses_Date!) == dateselect ) {
+                if (self.formatter3.string(from:ForReSultExpensesSalary.expenses_Date!) == dateselect ) {
                    SumExpenseSalarySingerVaule += ForReSultExpensesSalary.expenses_Salary
                 }
             }
@@ -141,7 +146,7 @@ class ViewController: UIViewController , ChartViewDelegate {
     @IBAction func segmentControllClick(_ sender: Any) {
         switch segmentControlOutlet.selectedSegmentIndex {
                 case 0:
-                    BoundView.backgroundColor = .lightText
+                    BoundView.backgroundColor = .orange
                     PieChart.layer.cornerRadius = 15
                     ViewDayWeek.layer.cornerRadius = 15
                     print("sec0")
@@ -181,6 +186,7 @@ class ViewController: UIViewController , ChartViewDelegate {
             results[beginningOfDay] = realm.objects(Model_data.self).filter("expenses_Date >= %@ AND expenses_Date <= %@", beginningOfDay, endOfDay)
         })
     }
+    
 //    func SumLabel() {
 //        let getdataIncome =  DatabaseHelper.shared.getAllContacts()
 //        let getdataExpen = DatabaseHelper.shared.getAllContacts()
@@ -200,9 +206,11 @@ class ViewController: UIViewController , ChartViewDelegate {
         TableView.dataSource = self
         tableViewSelect.delegate = self
         tableViewSelect.dataSource = self
-        Model_data_Array = DatabaseHelper.shared.getAllContacts()
-        self.TableView.reloadData()
         self.SortDay()
+        self.ChartApiRequst()
+        self.Model_data_Array = DatabaseHelper.shared.getAllContacts()
+        self.TableView.reloadData()
+        print(self.Model_data_Array)
         TableView.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
         tableViewSelect.register(UITableViewCell.self, forCellReuseIdentifier: "DefaultCell")
     }
@@ -214,40 +222,26 @@ class ViewController: UIViewController , ChartViewDelegate {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
         let dateNew = dateFormatter.string(from: Date())
-        print(dateNew)
         let dateFormatterMonth = DateFormatter()
         dateFormatterMonth.dateFormat = "MMMM"
         CurrenMonth = dateFormatterMonth.string(from: Date())
-        print(CurrenMonth)
         let formatter3 = DateFormatter()
         formatter3.dateFormat = "yyyy-MM-dd"
         formatter3.timeZone = TimeZone(abbreviation: "THA")
-//        for ForReSultIncomeSalary in  self.SetdataModel  where  ForReSultIncomeSalary.expenses_text_hidden != "รายจ่าย"  {
-//            if (formatter3.string(from:ForReSultIncomeSalary.expenses_Date!) == dateNew  ){
-//                SumDateIncomeChart +=  ForReSultIncomeSalary.expenses_Salary
-//            }else{
-//                SumDateIncomeChart = 99
-//            }
-//        }
         for ForReSultIncomeSalary in  self.SetdataModel
         where  ForReSultIncomeSalary.expenses_text_hidden != "รายจ่าย" && formatter3.string(from:ForReSultIncomeSalary.expenses_Date!) == dateNew {
             SumDateIncomeChart +=  ForReSultIncomeSalary.expenses_Salary
         }
-//        for ForReSultExpensesSalary in  self.SetdataModel  where  ForReSultExpensesSalary.expenses_text_hidden != "รายรับ"  {
-//            if (formatter3.string(from:ForReSultExpensesSalary.expenses_Date!) == dateNew ) {
-//               SumDateExpenseChart += ForReSultExpensesSalary.expenses_Salary
-//
-//            }else{
-//               SumDateExpenseChart = 55
-//            }
-//        }
         for ForReSultExpensesSalary in  self.SetdataModel
         where  ForReSultExpensesSalary.expenses_text_hidden != "รายรับ" && formatter3.string(from:ForReSultExpensesSalary.expenses_Date!) == dateNew   {
                SumDateExpenseChart += ForReSultExpensesSalary.expenses_Salary
         }
-        self.setChart(dataPoints: [CurrenMonth],
-                      valuesInSalary: [Double(SumDateIncomeChart)],
-                      valuesExSalary: [Double(SumDateExpenseChart)] )
+//        self.callbackSuccess = {
+            self.setChart(dataPoints: [CurrenMonth],
+                          valuesInSalary: [Double(SumDateIncomeChart)],
+                          valuesExSalary: [Double(SumDateExpenseChart)] )
+            
+//        }
         print(self.setChart(dataPoints: [CurrenMonth], valuesInSalary: [Double(SumDateIncomeChart)], valuesExSalary: [Double(SumDateExpenseChart)]))
     }
     
@@ -282,6 +276,7 @@ class ViewController: UIViewController , ChartViewDelegate {
          let settingview = SettingViewController()
          settingview.callbackSuccess = {
              self.TableView.reloadData()
+             self.ChartApiRequst()
          }
          settingview.modalPresentationStyle = .fullScreen
          NavigationController.pushViewController(settingview, animated: true)
@@ -296,6 +291,7 @@ class ViewController: UIViewController , ChartViewDelegate {
 //            let dataEntry1 = BarChartDataEntry(x: Double(i) , y: Double(valuesExSalary[i]))
 //                       dataEntries1.append(dataEntry1)
 //        }
+    
         for dataChart in  0..<dataPoints.count{
 //            let newMonth   =  Array(Set(arrayLiteral: dataChart).intersection(Set(SumTypelist)))
 //            print(newMonth)
@@ -366,27 +362,49 @@ class ViewController: UIViewController , ChartViewDelegate {
 }
 extension ViewController : UITableViewDelegate  , UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
-        return   itemDates.count
+//        return   itemDates.count
+        return itemDates.count
     }
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if( tableView ==  tableViewSelect ){
+            
+            print(dataSource)
         return   dataSource.count
         }
         return groupedItems[itemDates[section]]!.count
+//        return   dataSource.count
     }
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
         if(tableView == TableView){
             let cell = tableView.dequeueReusableCell(withIdentifier: "DefaultCell", for: indexPath) as! MyTableViewCell
             cell.selectionStyle = .none
             numberFormatter.numberStyle = .decimal
             let itemsForDate = groupedItems[itemDates[indexPath.section]]!
-            self.SectionDay = dateFormatter.string(from:  Array(itemsForDate.sorted(byKeyPath: "expenses_Date"))[indexPath.row].expenses_Date!)
+            SectionDay = dateFormatter.string(from:  Array(itemsForDate.sorted(byKeyPath: "expenses_Date"))[indexPath.row].expenses_Date!)
             cell.time_label?.text = self.SectionDay
             cell.type_header_label?.text = Array(itemsForDate.sorted(byKeyPath: "expenses_Date"))[indexPath.row].expenses_Type
             let formattedNumber = numberFormatter.string(from:NSNumber(value: Array(itemsForDate.sorted(byKeyPath: "expenses_Date"))[indexPath.row].expenses_Salary))
             cell.number_label?.text = formattedNumber
             cell.type_text_sta?.text =  Array(itemsForDate.sorted(byKeyPath: "expenses_Date"))[indexPath.row].expenses_text_hidden
+        
+//            formatter3.dateFormat = "yyyy-MM-dd"
+//            formatter3.timeZone = TimeZone(abbreviation: "THA")
+//            let dateFormatter = DateFormatter()
+//            dateFormatter.dateFormat = "yyyy-MM-dd"
+//            let DateNow = dateFormatter.string(from: Date())
+//            for ResultDateToday in self.ModeldataArrayToDate  where  formatter3.string(from:ResultDateToday.expenses_Date!) == DateNow {
+//                //                 print(ResultDateToday)
+//                //                print(self.ModeldataArrayToDate)
+//                cell.time_label?.text = dateFormatter.string(from: ResultDateToday.expenses_Date!)
+//                cell.type_header_label?.text = ResultDateToday.expenses_text_hidden
+//                cell.number_label?.text =  numberFormatter.string(from:NSNumber(value:(ResultDateToday.expenses_Salary)))
+//                cell.type_text_sta?.text = ResultDateToday.expenses_text_hidden
+//                print("text")
+//            }
+//            cell.time_label?.text = "test"
+//            cell.type_header_label?.text = "dede"
+//            cell.number_label?.text =  "dedeed"
+//            cell.type_text_sta?.text = "dedede"
             if( cell.type_text_sta?.text  == "รายจ่าย"){
                 cell.number_label?.textColor = UIColor(red: 1.00, green: 0.26, blue: 0.26, alpha: 1.00)
             }else{
@@ -412,7 +430,7 @@ extension ViewController : UITableViewDelegate  , UITableViewDataSource {
     }
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         let deleteAction = UIContextualAction(style: .destructive , title: "DELETE") {(action, view, completion) in
-            let dataDelete = self.Model_data_Array[indexPath.row]
+//            let dataDelete = self.Model_data_Array[indexPath.row]
             let alertController = UIAlertController(title: "Default Style", message: "A standard alert.", preferredStyle: .alert)
             let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { (action) in
               // do something
@@ -420,12 +438,22 @@ extension ViewController : UITableViewDelegate  , UITableViewDataSource {
             alertController.addAction(cancelAction)
             let OKAction = UIAlertAction(title: "OK", style: .default) { (action) in
                 let realm = try! Realm()
-                try! realm.write {
-                    realm.delete(dataDelete)
-                }
-                self.Model_data_Array.remove(at: indexPath.row)
+                if let item = self.items?[indexPath.row] {
+                                do {
+                                    try realm.write {
+                                        realm.delete(item)
+                                    }
+                                } catch {
+                                    print("Error deleting item, \(error)")
+                                }
+                                self.TableView.reloadData()
+                            
+                        }
                 self.TableView.deleteRows(at: [indexPath], with: .automatic)
+                self.TableView.endUpdates()
+                self.ChartApiRequst()
                 self.TableView.reloadData()
+                
             }
             alertController.addAction(OKAction)
             self.present( alertController , animated: true )
@@ -437,25 +465,25 @@ extension ViewController : UITableViewDelegate  , UITableViewDataSource {
     }
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
 //        let DaySection = SectionDay.self
-//        print(DaySection)
-        
+//
 //        if(DaySection != nil ){
-        return "\(String(describing: self.SectionDay))"
+        return "\(String(describing: ""))"
 //        }
-//        return "DaySection Axcd"
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print("Num: \(indexPath.row)")
         print("Value: \(dataSource[indexPath.row])")
     }
-    
-    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 50
     }
     override func viewWillAppear(_ animated: Bool){
-        self.ChartApiRequst()
+//        self.callbackSuccess?()
         self.PieChart.reloadInputViews()
+        self.TableView.reloadData()
+        self.ChartApiRequst()
+       
+     
     }
 
 }

@@ -17,9 +17,6 @@ class Model_data: Object  {
     @Persisted var expenses_Description: String
     @Persisted var expenses_text_hidden: String
     @Persisted var expenses_SetMonth: String
-    
-    
-    
     @Persisted var expenses_Date: Date? = nil
     
     convenience init(expenses_Salary: Int,

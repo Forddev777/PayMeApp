@@ -8,26 +8,19 @@
 import UIKit
 import MobileCoreServices
 import RealmSwift
-
-
 class AddExViewController: UIViewController  , UITextFieldDelegate  , UIPickerViewDelegate  , UIPickerViewDataSource  {
-
-    
     var Model_data_Array = [Model_data]()
 //    var data_type_income = [Model_Setting]()
     var data_type_income: [Model_Setting] = []
-    
 //    var TypemodelSeting = [String]()
 //    var TypedatamodelSeting = [String]()
 //    let myWorkout = Model_Setting()
 //    var myWorkouts:[Model_Setting] = []
-   
     var text_fixld_type_income: UITextField?
     var Button_Save_Data: UIButton?
     var text_fixld_date: UITextField?{
         didSet { text_fixld_date?.AddDone_CancelToolbar()}
     }
-
     var text_fixld_number: UITextField?{
         didSet { text_fixld_number?.AddDone_CancelToolbar()}
     }
@@ -132,7 +125,6 @@ class AddExViewController: UIViewController  , UITextFieldDelegate  , UIPickerVi
               dateFormatter.locale = Locale(identifier: "th_TH") // set locale to reliable US_POSIX
               dateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
               let Newdate = dateFormatter.date(from:isoDate!)
-            
             let v_expenses_number =  Int(text_fixld_number?.text! ?? "" ) ?? 0
             let v_expenses_Type = text_fixld_type_income?.text!
             let v_expenses_Description = text_fixld_detail?.text!

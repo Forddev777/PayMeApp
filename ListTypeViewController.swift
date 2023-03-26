@@ -36,6 +36,7 @@ class ListTypeViewController: UIViewController   , UITableViewDelegate , UITable
               self.view.addSubview(myTableView)
 //        let getdataExpen = DatabaseHelper.shared.getAllType()
 //        print(getdataExpen)
+        
         self.Model_Setting_Array =  DatabaseHelper.shared.getAllModelSetting()
         self.Model_data_Array =  DatabaseHelper.shared.getAllModeldata()
         self.Model_Setting_ArrayForDelete =  DatabaseHelper.shared.getAllModelSetting()
